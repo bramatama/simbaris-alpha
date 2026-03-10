@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -20,30 +21,82 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
-        Validator::make($input, [
+        // Determine the role for the new user
+        // Guest users registering via public page default to 'official_team'
+        // Authenticated users (admin/committee) can register other roles
+        $role = $input['role'] ?? 'official_team';
+        
+        // Guest can only register as official_team
+        if (!Auth::check() && $role !== 'official_team') {
+            throw new \InvalidArgumentException('Unauthorized role selection');
+        }
+
+        // Build validation rules based on role and context
+        $validationRules = [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
-            'role' => ['sometimes', 'string', 'in:admin,official_team,judge,commitee'],
-        ])->validate();
+        ];
+
+        // Add role-specific validation rules
+        switch ($role) {
+            case 'official_team':
+                $validationRules = array_merge($validationRules, [
+                    'institution' => ['required', 'string', 'max:255'],
+                    'level' => ['required', 'string', 'max:255'],
+                    'province' => ['required', 'string', 'max:255'],
+                    'city' => ['required', 'string', 'max:255'],
+                ]);
+                break;
+
+            case 'commitee':
+                $validationRules = array_merge($validationRules, [
+                    'department' => ['required', 'string', 'max:255'],
+                ]);
+                break;
+
+            case 'judge':
+                // Judges only need basic information
+                break;
+
+            case 'admin':
+                // Admins only need basic information
+                break;
+        }
+
+        Validator::make($input, $validationRules)->validate();
 
         $user = User::create([
             'public_id' => Str::uuid(),
             'name' => $input['name'],
             'email' => $input['email'],
-            'role' => $input['role'] ?? 'official_team',
+            'role' => $role,
             'password' => $input['password'],
         ]);
 
         // Create role-specific record based on the selected role
-        $role = $user->role;
-        if ($role === 'admin') {
-            $user->admin()->create();
-        } elseif ($role === 'official_team') {
-            $user->officialTeam()->create();
-        } elseif ($role === 'judge') {
-            $user->judge()->create();
-        } elseif ($role === 'commitee') {
-            $user->committee()->create();
+        switch ($role) {
+            case 'admin':
+                $user->admin()->create();
+                break;
+
+            case 'official_team':
+                $user->officialTeam()->create([
+                    'institution' => $input['institution'],
+                    'level' => $input['level'],
+                    'province' => $input['province'],
+                    'city' => $input['city'],
+                ]);
+                break;
+
+            case 'judge':
+                $user->judge()->create();
+                break;
+
+            case 'commitee':
+                $user->committee()->create([
+                    'department' => $input['department'],
+                ]);
+                break;
         }
 
         return $user;

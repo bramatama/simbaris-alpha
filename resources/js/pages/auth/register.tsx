@@ -5,13 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import AuthLayout from '@/layouts/auth-layout';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
@@ -65,22 +58,55 @@ export default function Register() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="role">Role</Label>
-                                <Select name="role" defaultValue="official_team">
-                                    <SelectTrigger id="role" tabIndex={3}>
-                                        <SelectValue placeholder="Select a role" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="official_team">
-                                            Official Team
-                                        </SelectItem>
-                                        <SelectItem value="judge">Judge</SelectItem>
-                                        <SelectItem value="commitee">
-                                            Committee Member
-                                        </SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.role} />
+                                <Label htmlFor="institution">Institution</Label>
+                                <Input
+                                    id="institution"
+                                    type="text"
+                                    required
+                                    tabIndex={3}
+                                    name="institution"
+                                    placeholder="Your institution name"
+                                />
+                                <InputError message={errors.institution} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="level">Level</Label>
+                                <Input
+                                    id="level"
+                                    type="text"
+                                    required
+                                    tabIndex={4}
+                                    name="level"
+                                    placeholder="E.g., SMA, SMK, SMP"
+                                />
+                                <InputError message={errors.level} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="province">Province</Label>
+                                <Input
+                                    id="province"
+                                    type="text"
+                                    required
+                                    tabIndex={5}
+                                    name="province"
+                                    placeholder="Your province"
+                                />
+                                <InputError message={errors.province} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="city">City</Label>
+                                <Input
+                                    id="city"
+                                    type="text"
+                                    required
+                                    tabIndex={6}
+                                    name="city"
+                                    placeholder="Your city"
+                                />
+                                <InputError message={errors.city} />
                             </div>
 
                             <div className="grid gap-2">
@@ -89,7 +115,7 @@ export default function Register() {
                                     id="password"
                                     type="password"
                                     required
-                                    tabIndex={4}
+                                    tabIndex={7}
                                     autoComplete="new-password"
                                     name="password"
                                     placeholder="Password"
@@ -105,7 +131,7 @@ export default function Register() {
                                     id="password_confirmation"
                                     type="password"
                                     required
-                                    tabIndex={5}
+                                    tabIndex={8}
                                     autoComplete="new-password"
                                     name="password_confirmation"
                                     placeholder="Confirm password"
@@ -118,7 +144,7 @@ export default function Register() {
                             <Button
                                 type="submit"
                                 className="mt-2 w-full"
-                                tabIndex={6}
+                                tabIndex={9}
                                 data-test="register-user-button"
                             >
                                 {processing && <Spinner />}
@@ -128,7 +154,7 @@ export default function Register() {
 
                         <div className="text-center text-sm text-muted-foreground">
                             Already have an account?{' '}
-                            <TextLink href={login()} tabIndex={7}>
+                            <TextLink href={login()} tabIndex={10}>
                                 Log in
                             </TextLink>
                         </div>
