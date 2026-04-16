@@ -15,8 +15,8 @@ type Props = {
 export default function ResetPassword({ token, email }: Props) {
     return (
         <AuthLayout
-            title="Reset password"
-            description="Please enter your new password below"
+            title="Reset Password"
+            description="Masukkan password baru anda"
         >
             <Head title="Reset password" />
 
@@ -60,7 +60,7 @@ export default function ResetPassword({ token, email }: Props) {
 
                         <div className="grid gap-2">
                             <Label htmlFor="password_confirmation">
-                                Confirm password
+                                Konfirmasi password
                             </Label>
                             <Input
                                 id="password_confirmation"
@@ -68,7 +68,7 @@ export default function ResetPassword({ token, email }: Props) {
                                 name="password_confirmation"
                                 autoComplete="new-password"
                                 className="mt-1 block w-full"
-                                placeholder="Confirm password"
+                                placeholder="Konfirmasi password"
                             />
                             <InputError
                                 message={errors.password_confirmation}

@@ -1,4 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
+import { useEffect, useState} from 'react';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -15,17 +16,37 @@ type Props = {
     status?: string;
     canResetPassword: boolean;
     canRegister: boolean;
+    remember: boolean;
 };
 
 export default function Login({
     status,
     canResetPassword,
     canRegister,
+    remember,
 }: Props) {
+    const [email, setEmail] = useState('');
+    const [isRemembered, setIsRemembered] = useState(false);
+
+    useEffect(() => {
+        const savedEmail = localStorage.getItem('last_login_email');
+        if (savedEmail) {
+            setEmail(savedEmail);
+        }
+    }, []);
+
+    const handleSaveEmailToLocal = () => {
+        if (isRemembered) {
+            localStorage.setItem('last_login_email', email);
+        } else {
+            localStorage.removeItem('last_login_email');
+        }
+    };
+
     return (
         <AuthLayout
-            title="Log in to your account"
-            description="Enter your email and password below to log in"
+            title="Masuk ke Akun Anda"
+            description="Masukkan email dan password untuk masuk ke akun Anda"
         >
             <Head title="Log in" />
 
@@ -38,7 +59,7 @@ export default function Login({
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">Email</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -48,6 +69,8 @@ export default function Login({
                                     tabIndex={1}
                                     autoComplete="email"
                                     placeholder="email@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                 />
                                 <InputError message={errors.email} />
                             </div>
@@ -61,7 +84,7 @@ export default function Login({
                                             className="ml-auto text-sm"
                                             tabIndex={5}
                                         >
-                                            Forgot password?
+                                            Lupa Password?
                                         </TextLink>
                                     )}
                                 </div>
@@ -82,8 +105,13 @@ export default function Login({
                                     id="remember"
                                     name="remember"
                                     tabIndex={3}
+                                    value="true"
+                                    checked={isRemembered}
+                                    onCheckedChange={(checked) =>
+                                        setIsRemembered(checked === true)
+                                    }
                                 />
-                                <Label htmlFor="remember">Remember me</Label>
+                                <Label htmlFor="remember">Ingat saya!</Label>
                             </div>
 
                             <Button
@@ -92,6 +120,7 @@ export default function Login({
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
+                                onClick={handleSaveEmailToLocal}
                             >
                                 {processing && <Spinner />}
                                 Log in
@@ -100,9 +129,12 @@ export default function Login({
 
                         {canRegister && (
                             <div className="text-center text-sm text-muted-foreground">
-                                Don't have an account?{' '}
-                                <TextLink href={registerStore.url()} tabIndex={5}>
-                                    Sign up
+                                Belum terdaftar?{' '}
+                                <TextLink
+                                    href={registerStore.url()}
+                                    tabIndex={5}
+                                >
+                                    Daftar disini
                                 </TextLink>
                             </div>
                         )}
