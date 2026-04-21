@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Admin;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Carbon\Carbon;
@@ -22,6 +23,10 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('admin123'),
             'role' => 'admin',
             'email_verified_at' => Carbon::now(),
+        ]);
+
+        Admin::factory()->create([
+            'user_id' => User::first()->user_id,
         ]);
     }
 }

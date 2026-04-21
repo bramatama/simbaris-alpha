@@ -53,3 +53,11 @@ test('users are rate limited', function () {
 
     $response->assertTooManyRequests();
 });
+
+test('authenticated user is redirected to dashboard when accessing login page', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->get(route('login'));
+
+    $response->assertRedirect(route('dashboard'));
+});

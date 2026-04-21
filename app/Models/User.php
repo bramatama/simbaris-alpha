@@ -18,10 +18,13 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $primaryKey = 'user_id';
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
+     * Get the route key for implicit model binding.
      */
+    public function getRouteKeyName(): string
+    {
+        return 'user_id';
+    }
+
     protected $fillable = [
         'public_id',
         'name',

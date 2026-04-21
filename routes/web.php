@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\Settings\PasswordController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Features;
@@ -20,10 +23,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
             default => abort(403, 'Unauthorized access'),
         };
     })->name('dashboard');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::put('/password', [PasswordController::class, 'update'])->middleware('throttle:6,1')
+        ->name('user-password.update');
 });
 
 // Role-based route groups
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // User management routes
+    Route::resource('users', UserController::class)->only(['index', 'show', 'update', 'destroy']);
+    
     // Admin routes - event management, judge/committee management
 
     // TODO: Add admin controllers and routes
@@ -59,5 +70,3 @@ Route::middleware(['auth', 'verified', 'role:official_team'])->prefix('official_
     // - View participation status
     // - Upload payment proof
 });
-
-require __DIR__.'/settings.php';

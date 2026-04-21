@@ -42,12 +42,12 @@ return new class extends Migration
 
         Schema::create('admins', function (Blueprint $table) {
             $table->id('admin_id');
-            $table->foreignId('user_id')->index()->constraint('users')->onDelete('cascade');
+            $table->foreignId('user_id')->index()->constrained('users','user_id')->onDelete('cascade');
         });
 
         Schema::create('official_teams', function (Blueprint $table) {
             $table->id('official_team_id');
-            $table->foreignId('user_id')->index()->constraint('users')->onDelete('cascade');
+            $table->foreignId('user_id')->index()->constrained('users','user_id')->onDelete('cascade');
             $table->string('province');
             $table->string('city');
             $table->string('level');
@@ -56,13 +56,13 @@ return new class extends Migration
         
         Schema::create('commitees', function (Blueprint $table) {
             $table->id('commitee_id');
-            $table->foreignId('user_id')->index()->constraint('users')->onDelete('cascade');
+            $table->foreignId('user_id')->index()->constrained('users','user_id')->onDelete('cascade');
             $table->string('department');
         });
 
         Schema::create('judges', function (Blueprint $table) {
             $table->id('judge_id');
-            $table->foreignId('user_id')->index()->constraint('users')->onDelete('cascade');
+            $table->foreignId('user_id')->index()->constrained('users','user_id')->onDelete('cascade');
         });
     }
 

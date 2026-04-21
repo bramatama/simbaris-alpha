@@ -11,14 +11,6 @@ use Inertia\Response;
 class PasswordController extends Controller
 {
     /**
-     * Show the user's password settings page.
-     */
-    public function edit(): Response
-    {
-        return Inertia::render('settings/password');
-    }
-
-    /**
      * Update the user's password.
      */
     public function update(PasswordUpdateRequest $request): RedirectResponse
@@ -27,6 +19,6 @@ class PasswordController extends Controller
             'password' => $request->password,
         ]);
 
-        return back();
+        return to_route('profile.edit')->with('status', 'Password updated successfully.');
     }
 }

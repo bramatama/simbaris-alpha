@@ -24,14 +24,14 @@ return new class extends Migration
             $table->dateTime('registration_end_time');
             $table->dateTime('start_time');
             $table->dateTime('end_time');
-            $table->foreignId('created_by')->index()->constraint('admins');
+            $table->foreignId('created_by')->index()->constrained('admins','admin_id')->onDelete('cascade');
             $table->timestamps();
         });
 
         Schema::create('participations', function (Blueprint $table) {
             $table->id('participation_id');
-            $table->foreignId('event_id')->index()->constraint('events')->onDelete('cascade');
-            $table->foreignId('official_team_id')->index()->constraint('official_teams')->onDelete('cascade');
+            $table->foreignId('event_id')->index()->constrained('events','event_id')->onDelete('cascade');
+            $table->foreignId('official_team_id')->index()->constrained('official_teams','official_team_id')->onDelete('cascade');
             $table->string('team_name')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->string('payment_proof_path')->nullable();
@@ -40,8 +40,8 @@ return new class extends Migration
 
         Schema::create('event_judges',function (Blueprint $table) {
             $table->id('event_judge_id');
-            $table->foreignId('event_id')->index()->constraint('events')->onDelete('cascade');
-            $table->foreignId('judge_id')->index()->constraint('judges')->onDelete('cascade');
+            $table->foreignId('event_id')->index()->constrained('events','event_id')->onDelete('cascade');
+            $table->foreignId('judge_id')->index()->constrained('judges','judge_id')->onDelete('cascade');
             $table->string('expertise');
             $table->string('secondary_expertise')->nullable();
             $table->timestamps();
@@ -49,8 +49,8 @@ return new class extends Migration
 
         Schema::create('event_commitees',function (Blueprint $table) {
             $table->id('event_commitee_id');
-            $table->foreignId('event_id')->index()->constraint('events')->onDelete('cascade');
-            $table->foreignId('commitee_id')->index()->constraint('commitees')->onDelete('cascade');
+            $table->foreignId('event_id')->index()->constrained('events','event_id')->onDelete('cascade');
+            $table->foreignId('commitee_id')->index()->constrained('commitees','commitee_id')->onDelete('cascade');
             $table->enum('positon', ['auditor', 'administration'])->default('administration');
             $table->timestamps();
         });

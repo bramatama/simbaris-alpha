@@ -45,4 +45,59 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
+    /**
+     * Indicate that the model's email address should be verified.
+     */
+    public function verified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => now(),
+        ]);
+    }
+
+    /**
+     * Create an admin user with admin record.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
+        ])->afterCreating(fn ($user) => $user->admin()->create());
+    }
+
+    /**
+     * Create a judge user with judge record.
+     */
+    public function judge(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'judge',
+        ])->afterCreating(fn ($user) => $user->judge()->create());
+    }
+
+    /**
+     * Create a committee user with committee record.
+     */
+    public function committee(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'commitee',
+        ])->afterCreating(fn ($user) => $user->committee()->create(['department' => 'General']));
+    }
+
+    /**
+     * Create an official team user with official team record.
+     */
+    public function officialTeam(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'official_team',
+        ])->afterCreating(fn ($user) => $user->officialTeam()->create([
+            'institution' => 'SMA Test',
+            'level' => 'SMA',
+            'province' => 'Jakarta',
+            'city' => 'Jakarta Selatan',
+        ]));
+    }
 }
