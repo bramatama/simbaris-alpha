@@ -82,7 +82,7 @@ describe('Role-Based Dashboard Assignment', function () {
 
         $response->assertInertia(fn ($page) => $page
             ->has('auth.user', fn ($user) => $user
-                ->where('role', 'commitee')
+                ->where('role', 'committee')
                 ->etc()
             )
         );

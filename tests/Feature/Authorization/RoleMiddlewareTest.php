@@ -129,7 +129,7 @@ describe('Role-Based Middleware', function () {
 
     describe('Committee Users', function () {
         beforeEach(function () {
-            $user = User::factory()->create(['role' => 'commitee']);
+            $user = User::factory()->create(['role' => 'committee']);
             $user->committee()->create(['department' => 'Auditor']);
             $this->actingAs($user);
         });

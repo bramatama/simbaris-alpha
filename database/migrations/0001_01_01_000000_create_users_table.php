@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('public_id')->unique();
             $table->string('name');
             $table->string('email')->unique();
-            $table->enum('role', ['admin', 'official_team', 'judge', 'commitee'])->default('official_team');
+            $table->enum('role', ['admin', 'official_team', 'judge', 'committee'])->default('official_team');
             $table->string('contact_info')->nullable();
             $table->string('profile_picture_path')->nullable();
             $table->timestamp('email_verified_at')->nullable();
@@ -54,8 +54,8 @@ return new class extends Migration
             $table->string('institution');
         });
         
-        Schema::create('commitees', function (Blueprint $table) {
-            $table->id('commitee_id');
+        Schema::create('committees', function (Blueprint $table) {
+            $table->id('committee_id');
             $table->foreignId('user_id')->index()->constrained('users','user_id')->onDelete('cascade');
             $table->string('department');
         });
@@ -77,6 +77,6 @@ return new class extends Migration
         Schema::dropIfExists('admins');
         Schema::dropIfExists('official_teams');
         Schema::dropIfExists('judges');
-        Schema::dropIfExists('commitees');
+        Schema::dropIfExists('committees');
     }
 };

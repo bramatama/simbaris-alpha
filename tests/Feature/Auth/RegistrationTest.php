@@ -313,13 +313,13 @@ describe('Committee Registration', function () {
             'email' => 'newcomm@example.com',
             'password' => 'Password123!',
             'password_confirmation' => 'Password123!',
-            'role' => 'commitee',
+            'role' => 'committee',
             'department' => 'Engineering',
         ]);
 
         $this->assertTrue(User::where('email', 'newcomm@example.com')->exists());
         $user = User::where('email', 'newcomm@example.com')->first();
-        expect($user->role)->toBe('commitee');
+        expect($user->role)->toBe('committee');
     });
 
     test('new committee user has committee record with department', function () {
@@ -330,7 +330,7 @@ describe('Committee Registration', function () {
             'email' => 'newcomm@example.com',
             'password' => 'Password123!',
             'password_confirmation' => 'Password123!',
-            'role' => 'commitee',
+            'role' => 'committee',
             'department' => 'Engineering',
         ]);
 
@@ -347,7 +347,7 @@ describe('Committee Registration', function () {
             'email' => 'newcomm@example.com',
             'password' => 'Password123!',
             'password_confirmation' => 'Password123!',
-            'role' => 'commitee',
+            'role' => 'committee',
         ]);
 
         $response->assertSessionHasErrors('department');
@@ -359,7 +359,7 @@ describe('Committee Registration', function () {
             'email' => 'hacker@example.com',
             'password' => 'Password123!',
             'password_confirmation' => 'Password123!',
-            'role' => 'commitee',
+            'role' => 'committee',
             'department' => 'Hacking',
         ]);
 

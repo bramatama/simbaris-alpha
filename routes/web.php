@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\PasswordController;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +19,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return match ($role){
             'admin' => inertia('admin/dashboard'),
             'judge' => inertia('judge/dashboard'),
-            'commitee' => inertia('committee/dashboard'),
+            'committee' => inertia('committee/dashboard'),
             'official_team' => inertia('official_team/dashboard'),
             default => abort(403, 'Unauthorized access'),
         };
@@ -26,17 +27,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::put('/password', [PasswordController::class, 'update'])->middleware('throttle:6,1')
-        ->name('user-password.update');
+    Route::put('/password', [PasswordController::class, 'update'])->middleware('throttle:6,1')->name('user-password.update');
 });
 
 // Role-based route groups
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // User management routes
     Route::resource('users', UserController::class)->only(['index', 'show', 'update', 'destroy']);
-    
-    // Admin routes - event management, judge/committee management
-
+    Route::resource('events', EventController::class);
     // TODO: Add admin controllers and routes
     // - Event CRUD
     // - Judge management
@@ -53,7 +51,7 @@ Route::middleware(['auth', 'verified', 'role:judge'])->prefix('judge')->name('ju
     // - View event details
 });
 
-Route::middleware(['auth', 'verified', 'role:commitee'])->prefix('committee')->name('committee.')->group(function () {
+Route::middleware(['auth', 'verified', 'role:committee'])->prefix('committee')->name('committee.')->group(function () {
     // Committee routes - view assigned events, audit
     // TODO: Add committee controllers and routes
     // - View assigned events

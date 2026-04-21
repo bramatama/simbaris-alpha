@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid, Moon } from 'lucide-react';
+import { CalendarCheckIcon, FolderGit2, LayoutGrid, Moon } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -33,6 +33,11 @@ const getMainNavItems = (userRole?: string): NavItem[] => {
             href: '/admin/users',
             icon: FolderGit2,
         });
+        items.push({
+            title: 'Event Management',
+            href: '/admin/events',
+            icon: CalendarCheckIcon,
+        })
     }
 
     return items;
@@ -45,16 +50,6 @@ export function AppSidebar() {
     const { appearance, updateAppearance } = useAppearance();
 
     const footerNavItems = [
-        {
-            title: 'Repository',
-            href: 'https://github.com/laravel/react-starter-kit',
-            icon: FolderGit2,
-        },
-        {
-            title: 'Documentation',
-            href: 'https://laravel.com/docs/starter-kits#react',
-            icon: BookOpen,
-        },
         {
             title: 'Dark Theme',
             icon: Moon,

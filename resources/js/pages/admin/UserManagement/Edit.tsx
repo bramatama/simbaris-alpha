@@ -19,14 +19,14 @@ interface User {
     public_id: string;
     name: string;
     email: string;
-    role: 'admin' | 'official_team' | 'judge' | 'commitee';
+    role: 'admin' | 'official_team' | 'judge' | 'committee';
     contact_info?: string;
 }
 
 interface FormData {
     name: string;
     email: string;
-    role: 'admin' | 'official_team' | 'judge' | 'commitee';
+    role: 'admin' | 'official_team' | 'judge' | 'committee';
     contact_info: string;
     password: string;
     password_confirmation: string;
@@ -131,7 +131,7 @@ export default function EditUser() {
                                 <SelectContent>
                                     <SelectItem value="admin">Admin</SelectItem>
                                     <SelectItem value="judge">Judge</SelectItem>
-                                    <SelectItem value="commitee">Committee</SelectItem>
+                                    <SelectItem value="committee">Committee</SelectItem>
                                     <SelectItem value="official_team">Official Team</SelectItem>
                                 </SelectContent>
                             </Select>

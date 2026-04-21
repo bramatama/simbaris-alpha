@@ -11,8 +11,8 @@ class Committee extends Model
 {
     use HasFactory;
 
-    protected $table = 'commitees';
-    protected $primaryKey = 'commitee_id';
+    protected $table = 'committees';
+    protected $primaryKey = 'committee_id';
     public $timestamps = false;
 
     protected $fillable = [
@@ -33,6 +33,6 @@ class Committee extends Model
      */
     public function eventCommittees(): HasMany
     {
-        return $this->hasMany(EventCommittee::class, 'commitee_id', 'commitee_id');
+        return $this->hasMany(EventCommittee::class, 'committee_id', 'committee_id');
     }
 }

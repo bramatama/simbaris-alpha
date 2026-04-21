@@ -82,7 +82,7 @@ class UserFactory extends Factory
     public function committee(): static
     {
         return $this->state(fn (array $attributes) => [
-            'role' => 'commitee',
+            'role' => 'committee',
         ])->afterCreating(fn ($user) => $user->committee()->create(['department' => 'General']));
     }
 

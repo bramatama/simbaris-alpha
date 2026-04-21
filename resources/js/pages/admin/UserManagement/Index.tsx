@@ -14,7 +14,7 @@ interface User {
     public_id: string;
     name: string;
     email: string;
-    role: 'admin' | 'official_team' | 'judge' | 'commitee';
+    role: 'admin' | 'official_team' | 'judge' | 'committee';
     contact_info?: string;
     created_at: string;
 }
@@ -61,7 +61,7 @@ export default function UserManagementIndex() {
         const colors: Record<string, string> = {
             admin: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100',
             judge: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100',
-            commitee: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
+            committee: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
             official_team: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
         };
         return colors[role] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100';

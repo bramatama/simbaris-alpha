@@ -47,11 +47,11 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('event_commitees',function (Blueprint $table) {
-            $table->id('event_commitee_id');
+        Schema::create('event_committees',function (Blueprint $table) {
+            $table->id('event_committee_id');
             $table->foreignId('event_id')->index()->constrained('events','event_id')->onDelete('cascade');
-            $table->foreignId('commitee_id')->index()->constrained('commitees','commitee_id')->onDelete('cascade');
-            $table->enum('positon', ['auditor', 'administration'])->default('administration');
+            $table->foreignId('committee_id')->index()->constrained('committees','committee_id')->onDelete('cascade');
+            $table->enum('position', ['auditor', 'administration'])->default('administration');
             $table->timestamps();
         });
     }
@@ -64,6 +64,6 @@ return new class extends Migration
         Schema::dropIfExists('events');
         Schema::dropIfExists('participations');
         Schema::dropIfExists('event_judges');
-        Schema::dropIfExists('event_commitees');
+        Schema::dropIfExists('event_committees');
     }
 };

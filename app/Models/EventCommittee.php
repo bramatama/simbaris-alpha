@@ -10,13 +10,13 @@ class EventCommittee extends Model
 {
     use HasFactory;
 
-    protected $table = 'event_commitees';
-    protected $primaryKey = 'event_commitee_id';
+    protected $table = 'event_committees';
+    protected $primaryKey = 'event_committee_id';
 
     protected $fillable = [
         'event_id',
-        'commitee_id',
-        'positon',
+        'committee_id',
+        'position',
     ];
 
     protected $casts = [
@@ -37,6 +37,6 @@ class EventCommittee extends Model
      */
     public function committee(): BelongsTo
     {
-        return $this->belongsTo(Committee::class, 'commitee_id', 'commitee_id');
+        return $this->belongsTo(Committee::class, 'committee_id', 'committee_id');
     }
 }

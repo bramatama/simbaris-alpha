@@ -48,7 +48,7 @@ class CreateNewUser implements CreatesNewUsers
                 ]);
                 break;
 
-            case 'commitee':
+            case 'committee':
                 $validationRules = array_merge($validationRules, [
                     'department' => ['required', 'string', 'max:255'],
                 ]);
@@ -92,7 +92,7 @@ class CreateNewUser implements CreatesNewUsers
                 $user->judge()->create();
                 break;
 
-            case 'commitee':
+            case 'committee':
                 $user->committee()->create([
                     'department' => $input['department'],
                 ]);

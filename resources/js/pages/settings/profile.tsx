@@ -32,7 +32,7 @@ interface User {
     public_id: string;
     name: string;
     email: string;
-    role: 'admin' | 'official_team' | 'judge' | 'commitee';
+    role: 'admin' | 'official_team' | 'judge' | 'committee';
     contact_info?: string;
     profile_picture_path?: string;
 }

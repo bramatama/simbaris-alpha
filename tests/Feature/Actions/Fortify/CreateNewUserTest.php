@@ -116,7 +116,7 @@ describe('CreateNewUser Action - Official Team Registration', function () {
             'email' => 'hacker3@example.com',
             'password' => 'Password123!',
             'password_confirmation' => 'Password123!',
-            'role' => 'commitee',
+            'role' => 'committee',
             'department' => 'Hacking',
         ]);
 
