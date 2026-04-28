@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $committee_id
+ * @property int $user_id
+ * @property string $department
+ */
 class Committee extends Model
 {
     use HasFactory;

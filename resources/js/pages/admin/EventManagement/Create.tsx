@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Head, useForm } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
+import AppLayout from '@/layouts/main-app-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,37 +18,48 @@ import { Trash2, PlusCircle, UserPlus } from 'lucide-react';
 import type { BreadcrumbItem } from '@/types';
 import {
     Select,
+    SelectLabel,
+    SelectGroup,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { ConfirmationDialog } from '@/components/confirmation-dialog';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
-    { title: 'Event Management', href: '/admin/events' },
+    { title: 'Event Management', href: '/events' },
     { title: 'Create Event', href: '#' },
 ];
 
 export default function EventCreate() {
-    const { data, setData, post, processing, errors } = useForm({
-        event_name: '',
-        description: '',
-        location: '',
-        status: 'draft',
-        registration_start_time: '',
-        registration_end_time: '',
-        start_time: '',
-        end_time: '',
-        // Array panitia kini meminta data untuk pembuatan akun
-        committees: [{ name: '', email: '', department: '', positon: '' }],
-    });
+    const { data, setData, post, processing, errors, clearErrors, transform } =
+        useForm({
+            event_name: '',
+            description: '',
+            location: '',
+            status: 'draft',
+            registration_start_time: '',
+            registration_end_time: '',
+            start_time: '',
+            end_time: '',
+            committees: [{ name: '', email: '', department: '', position: '' }],
+        });
+
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    useEffect(() => {
+        if (errors['confirmation' as keyof typeof errors]) {
+            setShowConfirm(true);
+        }
+    }, [errors['confirmation' as keyof typeof errors]]);
 
     const addCommittee = () => {
         setData('committees', [
             ...data.committees,
-            { name: '', email: '', department: '', positon: '' },
+            { name: '', email: '', department: '', position: '' },
         ]);
     };
 
@@ -59,17 +71,33 @@ export default function EventCreate() {
 
     const updateCommittee = (
         index: number,
-        field: 'name' | 'email' | 'department' | 'positon',
+        field: 'name' | 'email' | 'department' | 'position',
         value: string,
     ) => {
         const newCommittees = [...data.committees];
-        newCommittees[index][field] = value;
+        newCommittees[index] = { ...newCommittees[index], [field]: value };
         setData('committees', newCommittees);
     };
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
         post('/admin/events'); // Sesuaikan rute store-nya
+    };
+
+    const confirmSubmit = () => {
+        setShowConfirm(false);
+        clearErrors('confirmation' as keyof typeof errors);
+
+        transform((data) => ({
+            ...data,
+            force_create: true,
+        }));
+
+        post('/admin/events', {
+            onFinish: () => {
+                transform((data) => data);
+            },
+        });
     };
 
     return (
@@ -386,18 +414,34 @@ export default function EventCreate() {
                                         </div>
                                         <div className="grid gap-2">
                                             <Label>Event Position *</Label>
-                                            <Input
-                                                placeholder="e.g. Ketua Pelaksana"
-                                                value={item.positon}
-                                                onChange={(e) =>
+                                            <Select
+                                                value={item.position}
+                                                onValueChange={(value) =>
                                                     updateCommittee(
                                                         index,
-                                                        'positon',
-                                                        e.target.value,
+                                                        'position',
+                                                        value,
                                                     )
                                                 }
                                                 required
-                                            />
+                                            >
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select position" />
+                                                </SelectTrigger>
+                                                <SelectContent position="popper">
+                                                    <SelectGroup>
+                                                        <SelectLabel>
+                                                            Position
+                                                        </SelectLabel>
+                                                        <SelectItem value="administration">
+                                                            Administration
+                                                        </SelectItem>
+                                                        <SelectItem value="auditor">
+                                                            Auditor
+                                                        </SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
                                         </div>
                                     </div>
                                 </div>
@@ -430,6 +474,22 @@ export default function EventCreate() {
                         </Button>
                     </div>
                 </form>
+
+                <ConfirmationDialog
+                    open={showConfirm}
+                    onOpenChange={(open) => {
+                        setShowConfirm(open);
+                        if (!open)
+                            clearErrors('confirmation' as keyof typeof errors);
+                    }}
+                    title="Committee Account Exists"
+                    description={
+                        errors['confirmation' as keyof typeof errors] as string
+                    }
+                    confirmText="Proceed"
+                    onConfirm={confirmSubmit}
+                    isProcessing={processing}
+                />
             </div>
         </AppLayout>
     );

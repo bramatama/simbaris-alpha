@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $event_judge_id
+ * @property int $event_id
+ * @property int $judge_id
+ * @property string|null $expertise
+ * @property string|null $secondary_expertise
+ */
 class EventJudge extends Model
 {
     use HasFactory;

@@ -1,6 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/main-app-layout';
-import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -14,7 +13,7 @@ import type { BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
-    { title: 'Event Management', href: '/events' },
+    { title: 'Events', href: '/events' },
 ];
 
 // Interface yang sesuai dengan model Event.php milikmu
@@ -33,7 +32,6 @@ interface EventData {
 }
 
 export default function EventIndex({ events }: { events: EventData[] }) {
-    // Fungsi pembantu untuk mewarnai badge status
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'registration_open':
@@ -49,33 +47,27 @@ export default function EventIndex({ events }: { events: EventData[] }) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Event Management" />
+            <Head title="Events" />
 
             <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 md:p-6 lg:p-8">
                 {/* Header Section */}
                 <div className="flex flex-col items-start justify-between gap-4 border-b pb-6 sm:flex-row sm:items-center">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">
-                            Event Management
+                            Events
                         </h1>
                         <p className="mt-1 text-muted-foreground">
-                            Manage all competition events, schedules, and
+                            Lists of all competition events, schedules, and
                             committees.
                         </p>
                     </div>
-                    <Link href="/admin/events/create">
-                        <Button className="gap-2">
-                            <Plus className="h-4 w-4" />
-                            Create New Event
-                        </Button>
-                    </Link>
                 </div>
 
                 {/* Grid Cards Section */}
                 {events.length === 0 ? (
                     <div className="rounded-lg border-2 border-dashed bg-muted/30 py-20 text-center">
                         <p className="text-muted-foreground">
-                            No events found. Start by creating a new event.
+                            No events found.
                         </p>
                     </div>
                 ) : (
@@ -150,17 +142,6 @@ export default function EventIndex({ events }: { events: EventData[] }) {
                                             Teams
                                         </span>
                                     </div>
-                                    <Link
-                                        href={`/admin/events/${event.public_id}/edit`}
-                                    >
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            className="font-semibold text-primary hover:text-primary/80"
-                                        >
-                                            Manage Event
-                                        </Button>
-                                    </Link>
                                 </CardFooter>
                             </Card>
                         ))}

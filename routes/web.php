@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EventCommitteeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\Settings\ProfileController;
@@ -24,6 +25,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             default => abort(403, 'Unauthorized access'),
         };
     })->name('dashboard');
+
+    Route::get('/events', [EventController::class, 'index'])->name('events.index');
+    Route::get('/my-events', [EventController::class, 'my_events'])->name('events.my_events');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -34,7 +39,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // User management routes
     Route::resource('users', UserController::class)->only(['index', 'show', 'update', 'destroy']);
-    Route::resource('events', EventController::class);
+
+    Route::resource('events', EventController::class)->only(['create', 'store', 'show', 'edit', 'update', 'destroy']);
+
+    Route::resource('events/{event:public_id}/committees', EventCommitteeController::class)->only(['index', 'store', 'destroy']);
     // TODO: Add admin controllers and routes
     // - Event CRUD
     // - Judge management
@@ -52,6 +60,8 @@ Route::middleware(['auth', 'verified', 'role:judge'])->prefix('judge')->name('ju
 });
 
 Route::middleware(['auth', 'verified', 'role:committee'])->prefix('committee')->name('committee.')->group(function () {
+    Route::resource('events', EventController::class)->only(['show', 'edit', 'update']);
+
     // Committee routes - view assigned events, audit
     // TODO: Add committee controllers and routes
     // - View assigned events

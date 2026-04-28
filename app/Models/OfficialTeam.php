@@ -7,6 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $official_team_id
+ * @property int $user_id
+ * @property string $province
+ * @property string $city
+ * @property string $level
+ * @property string $institution
+ */
 class OfficialTeam extends Model
 {
     use HasFactory;

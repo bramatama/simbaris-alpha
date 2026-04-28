@@ -9,6 +9,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $user_id 
+ * @property string $public_id
+ * @property string $name
+ * @property string $email
+ * @property string $role
+ * @property string|null $contact_info
+ * @property string|null $profile_picture_path
+ * @property string $password
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

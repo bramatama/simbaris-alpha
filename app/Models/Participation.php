@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $participation_id
+ * @property int $event_id
+ * @property int|null $official_team_id
+ * @property string $team_name
+ * @property string $status
+ * @property string|null $payment_proof_path
+ */
 class Participation extends Model
 {
     use HasFactory;

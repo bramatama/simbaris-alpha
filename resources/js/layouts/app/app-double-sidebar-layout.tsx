@@ -2,16 +2,18 @@ import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
-import { NavFooter } from '@/components/nav-footer';
+import { SecondarySidebar } from '@/components/app-secondary-sidebar';
 import type { AppLayoutProps } from '@/types';
 
-export default function AppSidebarLayout({
+export default function AppDoubleSidebarLayout({
     children,
     breadcrumbs = [],
 }: AppLayoutProps) {
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
+
+            <SecondarySidebar />
             <AppContent variant="sidebar" className="overflow-x-hidden">
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 {children}

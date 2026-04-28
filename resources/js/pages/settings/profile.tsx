@@ -10,22 +10,14 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
 import Alerts from '@/components/alerts';
 import InputError from '@/components/input-error';
 import { Spinner } from '@/components/ui/spinner';
-import AppLayout from '@/layouts/app-layout';
+import AppLayout from '@/layouts/main-app-layout';
 import type { BreadcrumbItem } from '@/types';
 import { dashboard } from '@/routes';
 import { Trash2, Camera, Key, ArrowLeftRightIcon } from 'lucide-react'; // Tambahkan icon Camera
+import { FormDialog } from '@/components/form-dialog';
 
 interface User {
     user_id: number;
@@ -338,15 +330,8 @@ export default function ProfileEdit() {
                                         account secure.
                                     </p>
                                 </div>
-                                <Dialog
-                                    open={isPasswordOpen}
-                                    onOpenChange={(open) => {
-                                        setIsPasswordOpen(open);
-                                        if (!open) passwordForm.reset();
-                                        passwordForm.clearErrors();
-                                    }}
-                                >
-                                    <DialogTrigger asChild>
+                                <FormDialog
+                                    trigger={
                                         <Button
                                             variant="outline"
                                             className="border-red-200 whitespace-nowrap text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/80 dark:text-red-500 dark:hover:bg-red-950/50"
@@ -354,125 +339,96 @@ export default function ProfileEdit() {
                                             <Key className="h-4 w-4" />
                                             Change password
                                         </Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <form onSubmit={submitPassword}>
-                                            <DialogHeader>
-                                                <DialogTitle>
-                                                    Update Password
-                                                </DialogTitle>
-                                                <DialogDescription>
-                                                    Ensure your account is using
-                                                    a long, random password to
-                                                    stay secure.
-                                                </DialogDescription>
-                                            </DialogHeader>
-                                            <div className="space-y-4 py-6">
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="current_password">
-                                                        Current Password
-                                                    </Label>
-                                                    <Input
-                                                        id="current_password"
-                                                        type="password"
-                                                        value={
-                                                            passwordForm.data
-                                                                .current_password
-                                                        }
-                                                        onChange={(e) =>
-                                                            passwordForm.setData(
-                                                                'current_password',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        required
-                                                    />
-                                                    <InputError
-                                                        message={
-                                                            passwordForm.errors
-                                                                .current_password
-                                                        }
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="password_new">
-                                                        New Password
-                                                    </Label>
-                                                    <Input
-                                                        id="password_new"
-                                                        type="password"
-                                                        value={
-                                                            passwordForm.data
-                                                                .password
-                                                        }
-                                                        onChange={(e) =>
-                                                            passwordForm.setData(
-                                                                'password',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        required
-                                                    />
-                                                    <InputError
-                                                        message={
-                                                            passwordForm.errors
-                                                                .password
-                                                        }
-                                                    />
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="password_confirmation">
-                                                        Confirm New Password
-                                                    </Label>
-                                                    <Input
-                                                        id="password_confirmation"
-                                                        type="password"
-                                                        value={
-                                                            passwordForm.data
-                                                                .password_confirmation
-                                                        }
-                                                        onChange={(e) =>
-                                                            passwordForm.setData(
-                                                                'password_confirmation',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        required
-                                                    />
-                                                    <InputError
-                                                        message={
-                                                            passwordForm.errors
-                                                                .password_confirmation
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
-                                            <DialogFooter>
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    onClick={() =>
-                                                        setIsPasswordOpen(false)
-                                                    }
-                                                >
-                                                    Cancel
-                                                </Button>
-                                                <Button
-                                                    type="submit"
-                                                    disabled={
-                                                        passwordForm.processing
-                                                    }
-                                                >
-                                                    {passwordForm.processing && (
-                                                        <Spinner className="mr-2 h-4 w-4" />
-                                                    )}
-                                                    Save Password
-                                                </Button>
-                                            </DialogFooter>
-                                        </form>
-                                    </DialogContent>
-                                </Dialog>
+                                    }
+                                    open={isPasswordOpen}
+                                    onOpenChange={(open) => {
+                                        setIsPasswordOpen(open);
+                                        if (!open) passwordForm.reset();
+                                        passwordForm.clearErrors();
+                                    }}
+                                    onSubmit={submitPassword}
+                                    title="Update Password"
+                                    description="Ensure your account is using a long, random password to stay secure."
+                                    submitText="Save Password"
+                                    isProcessing={passwordForm.processing}
+                                >
+                                    <div className="space-y-2">
+                                        <Label htmlFor="current_password">
+                                            Current Password
+                                        </Label>
+                                        <Input
+                                            id="current_password"
+                                            type="password"
+                                            value={
+                                                passwordForm.data
+                                                    .current_password
+                                            }
+                                            onChange={(e) =>
+                                                passwordForm.setData(
+                                                    'current_password',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            required
+                                        />
+                                        <InputError
+                                            message={
+                                                passwordForm.errors
+                                                    .current_password
+                                            }
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="password_new">
+                                            New Password
+                                        </Label>
+                                        <Input
+                                            id="password_new"
+                                            type="password"
+                                            value={passwordForm.data.password}
+                                            onChange={(e) =>
+                                                passwordForm.setData(
+                                                    'password',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            required
+                                        />
+                                        <InputError
+                                            message={
+                                                passwordForm.errors.password
+                                            }
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="password_confirmation">
+                                            Confirm New Password
+                                        </Label>
+                                        <Input
+                                            id="password_confirmation"
+                                            type="password"
+                                            value={
+                                                passwordForm.data
+                                                    .password_confirmation
+                                            }
+                                            onChange={(e) =>
+                                                passwordForm.setData(
+                                                    'password_confirmation',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            required
+                                        />
+                                        <InputError
+                                            message={
+                                                passwordForm.errors
+                                                    .password_confirmation
+                                            }
+                                        />
+                                    </div>
+                                </FormDialog>
                             </div>
+
                             {/* Transfer Akun */}
                             <div className="flex flex-col justify-between gap-4 bg-white p-4 sm:flex-row sm:items-center dark:bg-transparent">
                                 <div>
@@ -485,11 +441,8 @@ export default function ProfileEdit() {
                                         verify.
                                     </p>
                                 </div>
-                                <Dialog
-                                    open={isTransferOpen}
-                                    onOpenChange={setIsTransferOpen}
-                                >
-                                    <DialogTrigger asChild>
+                                <FormDialog
+                                    trigger={
                                         <Button
                                             variant="outline"
                                             className="border-red-200 whitespace-nowrap text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/80 dark:text-red-500 dark:hover:bg-red-950/50"
@@ -497,77 +450,41 @@ export default function ProfileEdit() {
                                             <ArrowLeftRightIcon className="h-4 w-4" />
                                             Transfer account
                                         </Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <form onSubmit={submitTransfer}>
-                                            <DialogHeader>
-                                                <DialogTitle>
-                                                    Transfer Account Ownership
-                                                </DialogTitle>
-                                                <DialogDescription>
-                                                    Enter the email address of
-                                                    the new owner. They will
-                                                    receive a verification link.
-                                                </DialogDescription>
-                                            </DialogHeader>
-                                            <div className="space-y-4 py-6">
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="transfer_email">
-                                                        New Owner's Email
-                                                    </Label>
-                                                    <Input
-                                                        id="transfer_email"
-                                                        type="email"
-                                                        value={
-                                                            transferForm.data
-                                                                .email
-                                                        }
-                                                        onChange={(e) =>
-                                                            transferForm.setData(
-                                                                'email',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        placeholder="new.owner@example.com"
-                                                        required
-                                                    />
-                                                    <InputError
-                                                        message={
-                                                            transferForm.errors
-                                                                .email
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
-                                            <DialogFooter>
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    onClick={() =>
-                                                        setIsTransferOpen(false)
-                                                    }
-                                                >
-                                                    Cancel
-                                                </Button>
-                                                <Button
-                                                    type="submit"
-                                                    variant="destructive"
-                                                    disabled={
-                                                        transferForm.processing ||
-                                                        transferForm.data
-                                                            .email ===
-                                                            user.email
-                                                    }
-                                                >
-                                                    {transferForm.processing && (
-                                                        <Spinner className="mr-2 h-4 w-4" />
-                                                    )}
-                                                    Confirm Transfer
-                                                </Button>
-                                            </DialogFooter>
-                                        </form>
-                                    </DialogContent>
-                                </Dialog>
+                                    }
+                                    open={isTransferOpen}
+                                    onOpenChange={setIsTransferOpen}
+                                    onSubmit={submitTransfer}
+                                    title="Transfer Account Ownership"
+                                    description="Enter the email address of the new owner. They will receive a verification link."
+                                    submitText="Confirm Transfer"
+                                    submitVariant="destructive"
+                                    isProcessing={transferForm.processing}
+                                    isDisabled={
+                                        transferForm.data.email === user.email
+                                    }
+                                >
+                                    <div className="space-y-2">
+                                        <Label htmlFor="transfer_email">
+                                            New Owner's Email
+                                        </Label>
+                                        <Input
+                                            id="transfer_email"
+                                            type="email"
+                                            value={transferForm.data.email}
+                                            onChange={(e) =>
+                                                transferForm.setData(
+                                                    'email',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            placeholder="new.owner@example.com"
+                                            required
+                                        />
+                                        <InputError
+                                            message={transferForm.errors.email}
+                                        />
+                                    </div>
+                                </FormDialog>
                             </div>
 
                             {/* Hapus Akun */}
@@ -581,14 +498,8 @@ export default function ProfileEdit() {
                                         going back. Please be certain.
                                     </p>
                                 </div>
-                                <Dialog
-                                    open={isDeleteOpen}
-                                    onOpenChange={(open) => {
-                                        setIsDeleteOpen(open);
-                                        if (!open) deleteForm.reset();
-                                    }}
-                                >
-                                    <DialogTrigger asChild>
+                                <FormDialog
+                                    trigger={
                                         <Button
                                             variant="outline"
                                             className="gap-2 border-red-200 whitespace-nowrap text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900/80 dark:text-red-500 dark:hover:bg-red-950/50"
@@ -596,78 +507,43 @@ export default function ProfileEdit() {
                                             <Trash2 className="h-4 w-4" />
                                             Delete account
                                         </Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <form onSubmit={submitDelete}>
-                                            <DialogHeader>
-                                                <DialogTitle className="text-red-600">
-                                                    Are you absolutely sure?
-                                                </DialogTitle>
-                                                <DialogDescription>
-                                                    This action cannot be
-                                                    undone. This will
-                                                    permanently delete your
-                                                    account and remove your data
-                                                    from our servers.
-                                                </DialogDescription>
-                                            </DialogHeader>
-                                            <div className="space-y-4 py-6">
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="password">
-                                                        Confirm Password
-                                                    </Label>
-                                                    <Input
-                                                        id="password"
-                                                        type="password"
-                                                        value={
-                                                            deleteForm.data
-                                                                .password
-                                                        }
-                                                        onChange={(e) =>
-                                                            deleteForm.setData(
-                                                                'password',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        placeholder="Enter your password"
-                                                        required
-                                                    />
-                                                    <InputError
-                                                        message={
-                                                            deleteForm.errors
-                                                                .password
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
-                                            <DialogFooter>
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    onClick={() =>
-                                                        setIsDeleteOpen(false)
-                                                    }
-                                                >
-                                                    Cancel
-                                                </Button>
-                                                <Button
-                                                    type="submit"
-                                                    variant="destructive"
-                                                    disabled={
-                                                        deleteForm.processing ||
-                                                        !deleteForm.data
-                                                            .password
-                                                    }
-                                                >
-                                                    {deleteForm.processing && (
-                                                        <Spinner className="mr-2 h-4 w-4" />
-                                                    )}
-                                                    Delete Account
-                                                </Button>
-                                            </DialogFooter>
-                                        </form>
-                                    </DialogContent>
-                                </Dialog>
+                                    }
+                                    open={isDeleteOpen}
+                                    onOpenChange={(open) => {
+                                        setIsDeleteOpen(open);
+                                        if (!open) deleteForm.reset();
+                                    }}
+                                    onSubmit={submitDelete}
+                                    title="Are you absolutely sure?"
+                                    titleClass="text-red-600"
+                                    description="This action cannot be undone. This will permanently delete your account and remove your data from our servers."
+                                    submitText="Delete Account"
+                                    submitVariant="destructive"
+                                    isProcessing={deleteForm.processing}
+                                    isDisabled={!deleteForm.data.password}
+                                >
+                                    <div className="space-y-2">
+                                        <Label htmlFor="password">
+                                            Confirm Password
+                                        </Label>
+                                        <Input
+                                            id="password"
+                                            type="password"
+                                            value={deleteForm.data.password}
+                                            onChange={(e) =>
+                                                deleteForm.setData(
+                                                    'password',
+                                                    e.target.value,
+                                                )
+                                            }
+                                            placeholder="Enter your password"
+                                            required
+                                        />
+                                        <InputError
+                                            message={deleteForm.errors.password}
+                                        />
+                                    </div>
+                                </FormDialog>
                             </div>
                         </div>
                     </div>

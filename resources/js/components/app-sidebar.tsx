@@ -1,5 +1,11 @@
 import { Link, usePage } from '@inertiajs/react';
-import { CalendarCheckIcon, FolderGit2, LayoutGrid, Moon } from 'lucide-react';
+import {
+    CalendarCheckIcon,
+    CalendarClockIcon,
+    FolderGit2,
+    LayoutGrid,
+    Moon,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -35,11 +41,31 @@ const getMainNavItems = (userRole?: string): NavItem[] => {
         });
         items.push({
             title: 'Event Management',
-            href: '/admin/events',
+            href: '/events',
             icon: CalendarCheckIcon,
-        })
+        });
     }
 
+    if (userRole == 'committee') {
+        items.push({
+            title: 'Hosted Events',
+            href: '/my-events',
+            icon: CalendarClockIcon,
+        });
+    }
+
+    if (userRole == 'official_team') {
+        items.push({
+            title: 'Events',
+            href: '/events',
+            icon: CalendarCheckIcon,
+        });
+        items.push({
+            title: 'My Events',
+            href: '/my-events',
+            icon: CalendarClockIcon,
+        });
+    }
     return items;
 };
 

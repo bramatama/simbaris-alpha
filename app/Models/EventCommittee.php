@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $event_committee_id
+ * @property int $event_id
+ * @property int $committee_id
+ * @property string|null $position
+ */
 class EventCommittee extends Model
 {
     use HasFactory;

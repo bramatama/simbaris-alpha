@@ -1,5 +1,5 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
+import AppLayout from '@/layouts/main-app-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -81,14 +81,21 @@ export default function EditUser() {
                         </Button>
                     </Link>
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Edit User</h1>
-                        <p className="text-muted-foreground mt-1">Update user information</p>
+                        <h1 className="text-3xl font-bold tracking-tight">
+                            Edit User
+                        </h1>
+                        <p className="mt-1 text-muted-foreground">
+                            Update user information
+                        </p>
                     </div>
                 </div>
 
                 {/* Form */}
                 <div className="w-full max-w-2xl">
-                    <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border bg-card p-6">
+                    <form
+                        onSubmit={handleSubmit}
+                        className="space-y-6 rounded-lg border bg-card p-6"
+                    >
                         {/* Name Field */}
                         <div className="space-y-2">
                             <Label htmlFor="name">Full Name</Label>
@@ -96,12 +103,18 @@ export default function EditUser() {
                                 id="name"
                                 type="text"
                                 value={data.name}
-                                onChange={(e) => setData('name', e.target.value)}
+                                onChange={(e) =>
+                                    setData('name', e.target.value)
+                                }
                                 placeholder="John Doe"
-                                className={errors.name ? 'border-destructive' : ''}
+                                className={
+                                    errors.name ? 'border-destructive' : ''
+                                }
                             />
                             {errors.name && (
-                                <p className="text-sm text-destructive">{errors.name}</p>
+                                <p className="text-sm text-destructive">
+                                    {errors.name}
+                                </p>
                             )}
                         </div>
 
@@ -112,53 +125,86 @@ export default function EditUser() {
                                 id="email"
                                 type="email"
                                 value={data.email}
-                                onChange={(e) => setData('email', e.target.value)}
+                                onChange={(e) =>
+                                    setData('email', e.target.value)
+                                }
                                 placeholder="john@example.com"
-                                className={errors.email ? 'border-destructive' : ''}
+                                className={
+                                    errors.email ? 'border-destructive' : ''
+                                }
                             />
                             {errors.email && (
-                                <p className="text-sm text-destructive">{errors.email}</p>
+                                <p className="text-sm text-destructive">
+                                    {errors.email}
+                                </p>
                             )}
                         </div>
 
                         {/* Role Select */}
                         <div className="space-y-2">
                             <Label htmlFor="role">Role</Label>
-                            <Select value={data.role} onValueChange={(value) => setData('role', value as any)}>
-                                <SelectTrigger className={errors.role ? 'border-destructive' : ''}>
+                            <Select
+                                value={data.role}
+                                onValueChange={(value) =>
+                                    setData('role', value as any)
+                                }
+                            >
+                                <SelectTrigger
+                                    className={
+                                        errors.role ? 'border-destructive' : ''
+                                    }
+                                >
                                     <SelectValue placeholder="Select a role" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="admin">Admin</SelectItem>
                                     <SelectItem value="judge">Judge</SelectItem>
-                                    <SelectItem value="committee">Committee</SelectItem>
-                                    <SelectItem value="official_team">Official Team</SelectItem>
+                                    <SelectItem value="committee">
+                                        Committee
+                                    </SelectItem>
+                                    <SelectItem value="official_team">
+                                        Official Team
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                             {errors.role && (
-                                <p className="text-sm text-destructive">{errors.role}</p>
+                                <p className="text-sm text-destructive">
+                                    {errors.role}
+                                </p>
                             )}
                         </div>
 
                         {/* Contact Info */}
                         <div className="space-y-2">
-                            <Label htmlFor="contact_info">Contact Information</Label>
+                            <Label htmlFor="contact_info">
+                                Contact Information
+                            </Label>
                             <Input
                                 id="contact_info"
                                 type="text"
                                 value={data.contact_info}
-                                onChange={(e) => setData('contact_info', e.target.value)}
+                                onChange={(e) =>
+                                    setData('contact_info', e.target.value)
+                                }
                                 placeholder="+62 812 3456 7890"
-                                className={errors.contact_info ? 'border-destructive' : ''}
+                                className={
+                                    errors.contact_info
+                                        ? 'border-destructive'
+                                        : ''
+                                }
                             />
                             {errors.contact_info && (
-                                <p className="text-sm text-destructive">{errors.contact_info}</p>
+                                <p className="text-sm text-destructive">
+                                    {errors.contact_info}
+                                </p>
                             )}
                         </div>
 
                         {/* Divider */}
                         <div className="border-t pt-6">
-                            <h3 className="text-lg font-semibold mb-4">Change Password (Optional)</h3>
+                            <h3 className="mb-4 text-lg font-semibold">
+                                Change Password (Optional)
+                            </h3>
                         </div>
 
                         {/* Password Field */}
@@ -168,33 +214,52 @@ export default function EditUser() {
                                 id="password"
                                 type="password"
                                 value={data.password}
-                                onChange={(e) => setData('password', e.target.value)}
+                                onChange={(e) =>
+                                    setData('password', e.target.value)
+                                }
                                 placeholder="Leave blank to keep current password"
-                                className={errors.password ? 'border-destructive' : ''}
+                                className={
+                                    errors.password ? 'border-destructive' : ''
+                                }
                             />
                             {errors.password && (
-                                <p className="text-sm text-destructive">{errors.password}</p>
+                                <p className="text-sm text-destructive">
+                                    {errors.password}
+                                </p>
                             )}
                         </div>
 
                         {/* Password Confirmation */}
                         <div className="space-y-2">
-                            <Label htmlFor="password_confirmation">Confirm Password</Label>
+                            <Label htmlFor="password_confirmation">
+                                Confirm Password
+                            </Label>
                             <Input
                                 id="password_confirmation"
                                 type="password"
                                 value={data.password_confirmation}
-                                onChange={(e) => setData('password_confirmation', e.target.value)}
+                                onChange={(e) =>
+                                    setData(
+                                        'password_confirmation',
+                                        e.target.value,
+                                    )
+                                }
                                 placeholder="Confirm new password"
-                                className={errors.password_confirmation ? 'border-destructive' : ''}
+                                className={
+                                    errors.password_confirmation
+                                        ? 'border-destructive'
+                                        : ''
+                                }
                             />
                             {errors.password_confirmation && (
-                                <p className="text-sm text-destructive">{errors.password_confirmation}</p>
+                                <p className="text-sm text-destructive">
+                                    {errors.password_confirmation}
+                                </p>
                             )}
                         </div>
 
                         {/* Form Actions */}
-                        <div className="flex gap-3 border-t pt-6 justify-start">
+                        <div className="flex justify-start gap-3 border-t pt-6">
                             <Button
                                 type="submit"
                                 disabled={processing}
