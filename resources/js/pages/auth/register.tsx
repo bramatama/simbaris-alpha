@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, Link } from '@inertiajs/react';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,7 @@ import { Separator } from '@/components/ui/separator';
 import AuthLayout from '@/layouts/auth-layout';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
+import { ArrowLeft } from 'lucide-react';
 
 export default function Register() {
     const [level, setLevel] = useState('');
@@ -39,7 +40,7 @@ export default function Register() {
                     <>
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Nama</Label>
+                                <Label htmlFor="name">Nama Satuan</Label>
                                 <Input
                                     id="name"
                                     type="text"
@@ -48,7 +49,7 @@ export default function Register() {
                                     tabIndex={1}
                                     autoComplete="name"
                                     name="name"
-                                    placeholder="Nama Lengkap"
+                                    placeholder="Nama Satuan"
                                 />
                                 <InputError message={errors.name} />
                             </div>
@@ -78,6 +79,19 @@ export default function Register() {
                                     placeholder="Nama Institusi"
                                 />
                                 <InputError message={errors.institution} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="contact_info">Kontak</Label>
+                                <Input
+                                    id="contact_info"
+                                    type="text"
+                                    required
+                                    tabIndex={3}
+                                    name="contact_info"
+                                    placeholder="Kontak"
+                                />
+                                <InputError message={errors.contact_info} />
                             </div>
 
                             <div className="grid gap-2">
@@ -129,18 +143,19 @@ export default function Register() {
                                 />
                                 <InputError message={errors.province} />
                             </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="city">Kota</Label>
-                                <Input
-                                    id="city"
-                                    type="text"
-                                    required
-                                    tabIndex={6}
-                                    name="city"
-                                    placeholder="Kota"
-                                />
-                                <InputError message={errors.city} />
+                            <div className="flex flex-col items-center justify-center gap-4 md:col-span-2">
+                                <div className="md:w-1/2">
+                                    <Label htmlFor="city">Kota</Label>
+                                    <Input
+                                        id="city"
+                                        type="text"
+                                        required
+                                        tabIndex={6}
+                                        name="city"
+                                        placeholder="Kota"
+                                    />
+                                    <InputError message={errors.city} />
+                                </div>
                             </div>
                             <div className="flex flex-col items-center justify-center gap-4 md:col-span-2">
                                 <Separator></Separator>
@@ -192,6 +207,15 @@ export default function Register() {
                             <TextLink href={login()} tabIndex={10}>
                                 Log in
                             </TextLink>
+                        </div>
+                        <div className="mt-2 flex justify-center">
+                            <Link
+                                href="/"
+                                className="group flex items-center text-sm text-muted-foreground transition-colors hover:text-primary"
+                            >
+                                <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                                Kembali ke Beranda
+                            </Link>
                         </div>
                     </>
                 )}

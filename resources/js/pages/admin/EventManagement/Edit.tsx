@@ -42,6 +42,11 @@ export default function EventEdit({ event }: { event: any }) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
         { title: 'Event Management', href: '/events' },
+        {
+            title: event.event_name,
+            href: `/admin/events/${event.public_id}/edit`,
+        },
+
         { title: 'Edit Event', href: '#' },
     ];
 

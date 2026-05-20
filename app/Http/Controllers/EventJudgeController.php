@@ -5,40 +5,42 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\User;
-use App\Models\Committee;
-use App\Models\EventCommittee;
+use App\Models\Judge;
+use App\Models\EventJudge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
-class EventCommitteeController extends Controller
+class EventJudgeController extends Controller
 {
     public function index($public_id)
     {
-        $event = Event::select('event_id', 'event_name', 'public_id')
-                ->where('public_id', $public_id)
-                ->with([
-                    'eventCommittees:event_committee_id,event_id,committee_id,position',
-                    'eventCommittees.committee:committee_id,user_id,department',
-                    'eventCommittees.committee.user:user_id,name,email',
-                ])
-                ->firstOrFail();
+        // $event = Event::select('event_id', 'event_name', 'public_id')
+        //         ->where('public_id', $public_id)
+        //         ->with([
+        //             'eventJudges:event_judge_id,event_id,judge_id,expertise,secondary_expertise',
+        //             'eventJudges.judge:judge_id,user_id',
+        //             'eventJudges.judge.user:user_id,name,email',
+        //         ])
+        //         ->firstOrFail();
 
-        $existingCommittees = Committee::with('user:user_id,name,email')->get();
+        $event = Event::where('public_id', $public_id)->with('eventJudges.judge.user')->firstOrFail();
+
+
+        $existingJudges = Judge::with('user:user_id,name,email')->get();
 
         $role = auth()->user()?->role;
         $view = match ($role) {
-            'admin' => 'admin/EventManagement/Committees/Index',
-            'committee' => 'committee/HostedEvents/Committees/Index',
+            'admin' => 'admin/EventManagement/Judges/Index',
+            'committee' => 'committee/HostedEvents/Judges/Index',
             default => abort(403, 'Unauthorized access'),
         };
 
-        // TAMBAHKAN existingCommittees KE DALAM ARRAY PENGIRIMAN
         return inertia($view, [
             'event' => $event,
-            'existingCommittees' => $existingCommittees
+            'existingJudges' => $existingJudges
         ]);
     }
 
@@ -50,8 +52,8 @@ class EventCommitteeController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email',
-            'department' => 'required|string|max:255',
-            'position' => 'required|string|max:255', 
+            'expertise' => 'string|max:255',
+            'secondary_expertise' => 'nullable|string|max:255',
             'force_create' => 'nullable|boolean',
         ]);
 
@@ -59,30 +61,29 @@ class EventCommitteeController extends Controller
 
         if ($user) {
             // Tolak jika email dipakai oleh role selain panitia (misal juri/admin)
-            if ($user->role !== 'committee') {
+            if ($user->role !== 'judge') {
                 throw ValidationException::withMessages([
                     'email' => 'Email ini sudah digunakan oleh akun dengan peran (role) lain.',
                 ]);
             }
 
-            $committee = Committee::where('user_id', $user->user_id)->first();
+            $judge = Judge::where('user_id', $user->user_id)->first();
 
-            if ($committee) {
-                // Cek apakah panitia ini sudah pernah ditugaskan di event INI
-                $isAlreadyAssigned = EventCommittee::where('event_id', $event->event_id)
-                    ->where('committee_id', $committee->committee_id)
+            if ($judge) {
+                $isAlreadyAssigned = EventJudge::where('event_id', $event->event_id)
+                    ->where('judge_id', $judge->judge_id)
                     ->exists();
 
                 if ($isAlreadyAssigned) {
                     throw ValidationException::withMessages([
-                        'email' => 'Panitia ini sudah ditugaskan pada acara ini sebelumnya.',
+                        'email' => 'Juri ini sudah ditugaskan pada acara ini sebelumnya.',
                     ]);
                 }
 
                 // Lempar konfirmasi jika akun ada tapi belum dikonfirmasi (force_create)
                 if (empty($validated['force_create'])) {
                     throw ValidationException::withMessages([
-                        'confirmation' => 'Akun panitia ditemukan: ' . $user->name . ' (' . $committee->department . '). Lanjutkan menugaskan ke acara ini?',
+                        'confirmation' => 'Akun juri ditemukan: ' . $user->name . '. Lanjutkan menugaskan ke acara ini?',
                     ]);
                 }
             }
@@ -95,30 +96,30 @@ class EventCommitteeController extends Controller
                 [
                     'public_id' => Str::uuid()->toString(),
                     'name' => $validated['name'],
-                    'role' => 'committee', 
+                    'role' => 'judge', 
                     'password' => Hash::make('password123'),
                 ]
             );
 
-            $committee = Committee::firstOrCreate(
+            $judge = Judge::firstOrCreate(
                 ['user_id' => $user->user_id],
-                ['department' => $validated['department']]
             );
 
-            EventCommittee::create([
+            EventJudge::create([
                 'event_id' => $event->event_id,
-                'committee_id' => $committee->committee_id, 
-                'position' => $validated['position'], 
+                'judge_id' => $judge->judge_id, 
+                'expertise' => $validated['expertise'], 
+                'secondary_expertise' => $validated['secondary_expertise'], 
             ]);
         });
 
-        return back()->with('status', 'Panitia berhasil ditugaskan ke acara ini!');
+        return back()->with('status', 'Juri berhasil ditugaskan ke acara ini!');
     }
 
-    public function destroy($public_id, $event_committee_id)
+    public function destroy($public_id, $event_judge_id)
     {
-        EventCommittee::where('event_committee_id', $event_committee_id)->delete();
+        EventJudge::where('event_judge_id', $event_judge_id)->delete();
 
-        return back()->with('status', 'Panitia berhasil diberhentikan dari acara ini.');
+        return back()->with('status', 'Juri berhasil diberhentikan dari acara ini.');
     }
 }

@@ -34,7 +34,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Create Event', href: '#' },
 ];
 
-export default function EventCreate() {
+export default function EventCreate({
+    existingCommittees = [],
+}: {
+    existingCommittees: any[];
+}) {
     const { data, setData, post, processing, errors, clearErrors, transform } =
         useForm({
             event_name: '',
@@ -57,6 +61,8 @@ export default function EventCreate() {
     }, [errors['confirmation' as keyof typeof errors]]);
 
     const addCommittee = () => {
+        if (data.committees.length >= 3) return;
+
         setData('committees', [
             ...data.committees,
             { name: '', email: '', department: '', position: '' },
@@ -350,6 +356,98 @@ export default function EventCreate() {
                                         )}
                                     </div>
 
+                                    <div className="mb-4 grid gap-2 border-b border-dashed pb-4 md:col-span-2">
+                                        <Label className="text-muted-foreground">
+                                            Autofill dari akun yang sudah ada
+                                            (Opsional)
+                                        </Label>
+                                        <Select
+                                            onValueChange={(val) => {
+                                                if (val === '__clear__') {
+                                                    const newCommittees = [
+                                                        ...data.committees,
+                                                    ];
+
+                                                    newCommittees[index] = {
+                                                        name: '',
+                                                        email: '',
+                                                        department: '',
+                                                        position: '',
+                                                    };
+
+                                                    setData(
+                                                        'committees',
+                                                        newCommittees,
+                                                    );
+                                                    return;
+                                                }
+
+                                                const c =
+                                                    existingCommittees.find(
+                                                        (x) =>
+                                                            x.committee_id.toString() ===
+                                                            val,
+                                                    );
+                                                if (c) {
+                                                    const newCommittees = [
+                                                        ...data.committees,
+                                                    ];
+
+                                                    newCommittees[index] = {
+                                                        ...newCommittees[index],
+                                                        name:
+                                                            c.user?.name || '',
+                                                        email:
+                                                            c.user?.email || '',
+                                                        department:
+                                                            c.department || '',
+                                                    };
+
+                                                    setData(
+                                                        'committees',
+                                                        newCommittees,
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            <SelectTrigger className="w-full bg-muted/30">
+                                                <SelectValue placeholder="-- Pilih Panitia yang sudah terdaftar --" />
+                                            </SelectTrigger>
+                                            <SelectContent position="popper">
+                                                <SelectItem value="__clear__">
+                                                    ...
+                                                </SelectItem>
+                                                {existingCommittees
+                                                    .filter((committee) => {
+                                                        const selectedDepartments =
+                                                            data.committees
+                                                                .filter(
+                                                                    (_, i) =>
+                                                                        i !==
+                                                                        index,
+                                                                )
+                                                                .map(
+                                                                    (c) =>
+                                                                        c.department,
+                                                                );
+
+                                                        return !selectedDepartments.includes(
+                                                            committee.department,
+                                                        );
+                                                    })
+                                                    .map((c) => (
+                                                        <SelectItem
+                                                            key={c.committee_id}
+                                                            value={c.committee_id.toString()}
+                                                        >
+                                                            {c.user?.name} -{' '}
+                                                            {c.department}
+                                                        </SelectItem>
+                                                    ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
                                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                         <div className="grid gap-2">
                                             <Label>Full Name *</Label>
@@ -452,6 +550,7 @@ export default function EventCreate() {
                                 variant="outline"
                                 onClick={addCommittee}
                                 className="w-full gap-2 border-dashed"
+                                disabled={data.committees.length >= 3}
                             >
                                 <PlusCircle className="h-4 w-4" /> Add Another
                                 Committee Member

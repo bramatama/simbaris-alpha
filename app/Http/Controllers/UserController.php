@@ -12,16 +12,22 @@ class UserController extends Controller
     /**
      * Display a listing of all users (paginated)
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::query()
-            ->select(['user_id', 'public_id', 'name', 'email', 'role', 'contact_info', 'created_at'])
-            ->orderByDesc('created_at')
+        $query = User::query()
+            ->with(['officialTeam', 'committee', 'judge'])
             ->where('user_id', '!=', auth()->id())
-            ->paginate(15);
+            ->orderByDesc('created_at');
+
+        if ($request->filled('role') && $request->role !== 'all') {
+            $query->where('role', $request->role);
+        }
+
+        $users = $query->paginate(15)->withQueryString();
 
         return inertia('admin/UserManagement/Index', [
             'users' => $users,
+            'filters' => $request->only(['role']),
         ]);
     }
 
@@ -47,10 +53,10 @@ class UserController extends Controller
                 ->with('error', 'You cannot delete your own account.');
         }
 
-        if ($user->role !== 'official_team') {
-        return redirect()->back()
-            ->with('error', 'Only users with the official_team role can be deleted.');
-        }
+        // if ($user->role !== 'official_team') {
+        // return redirect()->back()
+        //     ->with('error', 'Only users with the official_team role can be deleted.');
+        // }
 
         $user->delete();
 

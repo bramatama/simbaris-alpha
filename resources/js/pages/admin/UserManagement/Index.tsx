@@ -1,78 +1,61 @@
-import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import AppLayout from '@/layouts/main-app-layout';
-import { Button } from '@/components/ui/button';
 import { ConfirmationDialog } from '@/components/confirmation-dialog';
-import { Trash2, Edit2 } from 'lucide-react';
+import { Pagination } from '@/components/pagination'; // Import Pagination
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { Users, Filter } from 'lucide-react';
 import type { BreadcrumbItem } from '@/types';
 import { dashboard } from '@/routes';
 
-interface User {
-    user_id: number;
-    public_id: string;
-    name: string;
-    email: string;
-    role: 'admin' | 'official_team' | 'judge' | 'committee';
-    contact_info?: string;
-    created_at: string;
-}
-
-interface PaginationLink {
-    url: string | null;
-    label: string;
-    active: boolean;
-}
+// Import komponen partials yang baru kita buat
+import UserTableHeaders from './partials/UserTableHeaders';
+import UserTableRow, { User } from './partials/UserTableRow';
 
 interface UsersResponse {
     data: User[];
-    links: PaginationLink[];
-    meta: {
-        current_page: number;
-        from: number;
-        last_page: number;
-        path: string;
-        per_page: number;
-        to: number;
-        total: number;
-    };
+    links: any[];
+    meta: { last_page: number };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-    },
-    {
-        title: 'User Management',
-        href: '#',
-    },
+    { title: 'Dashboard', href: dashboard() },
+    { title: 'User Management', href: '#' },
 ];
 
 export default function UserManagementIndex() {
-    const { props } = usePage<{ users?: UsersResponse }>();
-    const { users } = props;
+    const { props } = usePage<{
+        users?: UsersResponse;
+        filters?: { role?: string };
+    }>();
+    const { users, filters } = props;
 
     const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [currentRole, setCurrentRole] = useState(filters?.role || 'all');
 
-    const getRoleBadgeColor = (role: string) => {
-        const colors: Record<string, string> = {
-            admin: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100',
-            judge: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100',
-            committee:
-                'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100',
-            official_team:
-                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100',
-        };
-        return (
-            colors[role] ||
-            'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100'
-        );
+    const tableLayoutRole = filters?.role || 'all';
+
+    const handleRoleChange = (value: string) => {
+        setCurrentRole(value);
+        setIsLoading(true);
+        router.get('/admin/users', value === 'all' ? {} : { role: value }, {
+            preserveState: true,
+            preserveScroll: true,
+            onFinish: () => setIsLoading(false),
+        });
     };
 
     const handleDelete = () => {
         if (!deleteUserId) return;
-
         setIsDeleting(true);
         router.delete(`/admin/users/${deleteUserId}`, {
             onFinish: () => {
@@ -82,144 +65,91 @@ export default function UserManagementIndex() {
         });
     };
 
-    const formatDate = (date: string) => {
-        return new Date(date).toLocaleDateString('id-ID', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-        });
-    };
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="User Management" />
 
-            <div className="flex flex-1 flex-col gap-4 overflow-hidden p-4">
-                {/* Header */}
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 overflow-hidden p-4 md:p-6 lg:p-8">
+                {/* Header & Filter */}
+                <div className="flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                            User Management
+                        <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
+                            <Users className="h-8 w-8 text-primary" /> User
+                            Management
                         </h1>
                         <p className="mt-1 text-muted-foreground">
-                            Manage system users and their roles
+                            Manage system users, their roles, and specific
+                            profiles.
                         </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 rounded-lg border bg-muted/40 p-1.5">
+                        <Filter className="ml-2 h-4 w-4 text-muted-foreground" />
+                        <Select
+                            value={currentRole}
+                            onValueChange={handleRoleChange}
+                        >
+                            <SelectTrigger className="w-45 border-none bg-background shadow-sm">
+                                <SelectValue placeholder="Filter by Role" />
+                            </SelectTrigger>
+                            <SelectContent position="popper">
+                                <SelectItem value="all">All Roles</SelectItem>
+                                <SelectItem value="official_team">
+                                    Official Team
+                                </SelectItem>
+                                <SelectItem value="committee">
+                                    Committee
+                                </SelectItem>
+                                <SelectItem value="judge">Judge</SelectItem>
+                                <SelectItem value="admin">Admin</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
 
                 {/* Users Table */}
-                <div className="overflow-hidden rounded-lg border bg-card">
-                    <div className="overflow-x-auto">
-                        <div className="w-full border-collapse">
-                            {/* Table Header */}
-                            <div className="sticky top-0 hidden grid-cols-5 gap-4 border-b bg-muted/50 p-4 font-medium md:grid">
-                                <div>Name</div>
-                                <div>Email</div>
-                                <div>Contact</div>
-                                <div>Role</div>
-                                <div>Actions</div>
-                            </div>
+                {/* Users Table */}
+                <div className="rounded-md border bg-card shadow-sm">
+                    <Table>
+                        {/* Panggil komponen Header */}
+                        <UserTableHeaders role={tableLayoutRole} />
 
-                            {/* Table Body */}
-                            {users && users.data && users.data.length > 0 ? (
-                                users.data.map((user: User) => (
-                                    <div
+                        <TableBody
+                            className={`transition-opacity duration-200 ${isLoading ? 'pointer-events-none opacity-40' : 'opacity-100'}`}
+                        >
+                            {users?.data && users.data.length > 0 ? (
+                                users.data.map((user) => (
+                                    <UserTableRow
                                         key={user.user_id}
-                                        className="grid grid-cols-1 items-center gap-4 border-b p-4 transition-colors hover:bg-muted/30 md:grid-cols-5 md:items-center md:gap-4"
-                                    >
-                                        <div className="flex justify-between md:block">
-                                            <span className="text-sm text-muted-foreground md:hidden">
-                                                Name
-                                            </span>
-                                            <span className="font-medium">
-                                                {user.name}
-                                            </span>
-                                        </div>
-                                        <div className="flex justify-between md:block">
-                                            <span className="text-sm text-muted-foreground md:hidden">
-                                                Email
-                                            </span>
-                                            <span className="text-sm text-muted-foreground">
-                                                {user.email}
-                                            </span>
-                                        </div>
-                                        <div className="flex justify-between md:block">
-                                            <span className="text-sm text-muted-foreground md:hidden">
-                                                Contact
-                                            </span>
-                                            <span className="text-sm">
-                                                {user.contact_info || '-'}
-                                            </span>
-                                        </div>
-                                        <div className="flex justify-between md:block">
-                                            <span className="text-sm text-muted-foreground md:hidden">
-                                                Role
-                                            </span>
-                                            <span className="text-sm text-muted-foreground">
-                                                {user.role}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-col gap-2 md:flex-row">
-                                            <Link
-                                                href={`/admin/users/${user.user_id}`}
-                                            >
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="w-full md:w-auto"
-                                                >
-                                                    <Edit2 className="h-4 w-4" />
-                                                    Edit
-                                                </Button>
-                                            </Link>
-                                            <Button
-                                                variant="destructive"
-                                                size="sm"
-                                                className="w-full md:w-auto"
-                                                onClick={() =>
-                                                    setDeleteUserId(
-                                                        user.user_id,
-                                                    )
-                                                }
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                                Delete
-                                            </Button>
-                                        </div>
-                                    </div>
+                                        user={user}
+                                        role={tableLayoutRole}
+                                        onDelete={setDeleteUserId}
+                                    />
                                 ))
                             ) : (
-                                <div className="col-span-full p-8 text-center text-muted-foreground">
-                                    No users found
-                                </div>
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={6}
+                                        className="h-32 text-center"
+                                    >
+                                        <div className="flex flex-col items-center justify-center text-muted-foreground">
+                                            <Users className="mb-2 h-8 w-8 text-muted-foreground/30" />
+                                            <p>
+                                                No users found for this filter.
+                                            </p>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
                             )}
-                        </div>
-                    </div>
+                        </TableBody>
+                    </Table>
                 </div>
 
-                {/* Pagination */}
-                {users && users.meta && users.meta.last_page > 1 && (
-                    <div className="flex flex-wrap items-center justify-center gap-2">
-                        {users.links &&
-                            users.links.map(
-                                (link: PaginationLink, index: number) => (
-                                    <Link key={index} href={link.url || '#'}>
-                                        <Button
-                                            variant={
-                                                link.active
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
-                                            disabled={!link.url}
-                                            dangerouslySetInnerHTML={{
-                                                __html: link.label,
-                                            }}
-                                        />
-                                    </Link>
-                                ),
-                            )}
-                    </div>
-                )}
+                {/* Panggil komponen Pagination global */}
+                <Pagination
+                    links={users?.links}
+                    lastPage={users?.meta?.last_page}
+                />
             </div>
 
             <ConfirmationDialog

@@ -57,7 +57,7 @@ export default function CommitteeIndex({
         { title: 'Event Management', href: '/events' },
         {
             title: event.event_name,
-            href: `/admin/events/${event.public_id}/edit`,
+            href: `/committee/events/${event.public_id}/edit`,
         },
         { title: 'Manage Committees', href: '#' },
     ];
@@ -91,7 +91,7 @@ export default function CommitteeIndex({
 
     const submitAdd = (e: React.FormEvent) => {
         e.preventDefault();
-        post(`/admin/events/${event.public_id}/committees`, {
+        post(`/committee/events/${event.public_id}/committees`, {
             preserveScroll: true,
             onSuccess: () => {
                 setIsAddOpen(false);
@@ -104,7 +104,7 @@ export default function CommitteeIndex({
         if (!deleteId) return;
         setIsDeleting(true);
         router.delete(
-            `/admin/events/${event.public_id}/committees/${deleteId}`,
+            `/committee/events/${event.public_id}/committees/${deleteId}`,
             {
                 preserveScroll: true,
                 onSuccess: () => setDeleteId(null),
@@ -123,7 +123,7 @@ export default function CommitteeIndex({
             force_create: true,
         }));
 
-        post(`/admin/events/${event.public_id}/committees`, {
+        post(`/committee/events/${event.public_id}/committees`, {
             preserveScroll: true,
             onSuccess: () => {
                 setIsAddOpen(false);
@@ -144,7 +144,7 @@ export default function CommitteeIndex({
                 <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
                         <Link
-                            href={`/admin/events/${event.public_id}/details`}
+                            href={`/committee/events/${event.public_id}/details`}
                             className="mb-2 inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary"
                         >
                             <ArrowLeft className="mr-1 h-4 w-4" /> Back to Event

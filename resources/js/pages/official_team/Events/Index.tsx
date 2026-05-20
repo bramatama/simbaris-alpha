@@ -1,5 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/main-app-layout';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -142,6 +143,17 @@ export default function EventIndex({ events }: { events: EventData[] }) {
                                             Teams
                                         </span>
                                     </div>
+                                    <Link
+                                        href={`/official_team/events/${event.public_id}/enroll`}
+                                    >
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="font-semibold text-primary hover:text-primary/80"
+                                        >
+                                            Enroll Event
+                                        </Button>
+                                    </Link>
                                 </CardFooter>
                             </Card>
                         ))}

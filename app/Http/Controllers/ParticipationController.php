@@ -12,27 +12,28 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-class EventController extends Controller
+class ParticipationController extends Controller
 {
     /**
      * Display a listing of all events.
      */
-    public function index()
+    public function index($public_id)
     {
-        $role = auth()->user()?->role;
+        $event = Event::where('public_id', $public_id)
+                ->with('participations.officialTeam.user')
+                ->firstOrFail();
 
-        $events = $role !== 'admin'
-        ? Event::latest()->get()->where('status', '!=', 'draft')
-        : Event::withCount('participations')->latest()->get();
-        
+
+        $role = auth()->user()?->role;
         $view = match ($role) {
-            'admin' => 'admin/EventManagement/Index',
-            'official_team' => 'official_team/Events/Index',
+            'committee' => 'committee/HostedEvents/Participations/Index',
+            'official_team' => 'official_team/MyEvents/Participations/Index',
             default => abort(403, 'Unauthorized access'),
         };
 
+        // TAMBAHKAN existingCommittees KE DALAM ARRAY PENGIRIMAN
         return inertia($view, [
-            'events' => $events,
+            'event' => $event,
         ]);
     }
 

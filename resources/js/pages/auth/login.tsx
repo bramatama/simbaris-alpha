@@ -1,5 +1,5 @@
-import { Form, Head } from '@inertiajs/react';
-import { useEffect, useState} from 'react';
+import { Form, Head, Link } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import { store as registerStore } from '@/routes/register';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
+import { ArrowLeft } from 'lucide-react';
 
 type Props = {
     status?: string;
@@ -59,6 +60,10 @@ export default function Login({
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2">
+                                <InputError
+                                    className="flex  justify-center"
+                                    message={errors.email}
+                                />
                                 <Label htmlFor="email">Email</Label>
                                 <Input
                                     id="email"
@@ -72,7 +77,6 @@ export default function Login({
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
-                                <InputError message={errors.email} />
                             </div>
 
                             <div className="grid gap-2">
@@ -138,6 +142,15 @@ export default function Login({
                                 </TextLink>
                             </div>
                         )}
+                        <div className="mt-2 flex justify-center">
+                            <Link
+                                href="/"
+                                className="group flex items-center text-sm text-muted-foreground transition-colors hover:text-primary"
+                            >
+                                <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                                Kembali ke Beranda
+                            </Link>
+                        </div>
                     </>
                 )}
             </Form>

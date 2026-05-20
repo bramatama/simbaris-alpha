@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\EventCommitteeController;
+use App\Http\Controllers\EventJudgeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\PasswordController;
+use App\Http\Controllers\ParticipationController;
+use App\Models\Participation;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Features;
@@ -40,9 +43,16 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     // User management routes
     Route::resource('users', UserController::class)->only(['index', 'show', 'update', 'destroy']);
 
-    Route::resource('events', EventController::class)->only(['create', 'store', 'show', 'edit', 'update', 'destroy']);
+    Route::resource('events', EventController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+    
+    Route::get('events/{event:public_id}/details', [EventController::class, 'show'])->name('events.show');
 
-    Route::resource('events/{event:public_id}/committees', EventCommitteeController::class)->only(['index', 'store', 'destroy']);
+    Route::delete('events/{event:public_id}/committees/{event_committee:event_committee_id}', [EventCommitteeController::class, 'destroy'])->name('events.committees.destroy');
+    Route::resource('events/{event:public_id}/committees', EventCommitteeController::class)->only(['index', 'store']);
+
+    Route::delete('events/{event:public_id}/judges/{event_judge:event_judge_id}', [EventJudgeController::class, 'destroy'])->name('events.judges.destroy');
+    Route::resource('events/{event:public_id}/judges', EventJudgeController::class)->only(['index', 'store']);
+
     // TODO: Add admin controllers and routes
     // - Event CRUD
     // - Judge management
@@ -60,7 +70,15 @@ Route::middleware(['auth', 'verified', 'role:judge'])->prefix('judge')->name('ju
 });
 
 Route::middleware(['auth', 'verified', 'role:committee'])->prefix('committee')->name('committee.')->group(function () {
-    Route::resource('events', EventController::class)->only(['show', 'edit', 'update']);
+    Route::resource('events', EventController::class)->only(['edit', 'update']);
+
+    Route::get('events/{event:public_id}/details', [EventController::class, 'show'])->name('events.show');
+
+    Route::delete('events/{event:public_id}/committees/{event_committee:event_committee_id}', [EventCommitteeController::class, 'destroy'])->name('events.committees.destroy');
+    Route::resource('events/{event:public_id}/committees', EventCommitteeController::class)->only(['index', 'store']);
+
+    Route::delete('events/{event:public_id}/judges/{event_judge:event_judge_id}', [EventJudgeController::class, 'destroy'])->name('events.judges.destroy');
+    Route::resource('events/{event:public_id}/judges', EventJudgeController::class)->only(['index', 'store']);
 
     // Committee routes - view assigned events, audit
     // TODO: Add committee controllers and routes
@@ -70,6 +88,7 @@ Route::middleware(['auth', 'verified', 'role:committee'])->prefix('committee')->
 });
 
 Route::middleware(['auth', 'verified', 'role:official_team'])->prefix('official_team')->name('official_team.')->group(function () {
+    Route::get('events/{event:public_id}/enroll', [ParticipationController::class, 'create'])->name('events.official_team.create');
     // Official Team routes - register for events, view participations
     // TODO: Add official team controllers and routes
     // - Browse available events
