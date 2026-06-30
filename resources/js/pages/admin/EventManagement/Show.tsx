@@ -28,7 +28,7 @@ export default function EventShow({ event }: { event: any }) {
         { title: 'Event Management', href: '/events' },
         {
             title: event.event_name,
-            href: `/admin/events/${event.public_id}/edit`,
+            href: `/admin/events/${event.public_id}/information`,
         },
 
         { title: 'Event Details', href: '#' },

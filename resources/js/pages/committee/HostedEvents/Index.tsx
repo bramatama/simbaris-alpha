@@ -144,7 +144,7 @@ export default function EventIndex({ events }: { events: EventData[] }) {
                                         </span>
                                     </div>
                                     <Link
-                                        href={`/committee/events/${event.public_id}/edit`}
+                                        href={`/committee/events/${event.public_id}/information`}
                                     >
                                         <Button
                                             variant="ghost"

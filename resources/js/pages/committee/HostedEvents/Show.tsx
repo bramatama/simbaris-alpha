@@ -25,10 +25,10 @@ import type { BreadcrumbItem } from '@/types';
 export default function EventShow({ event }: { event: any }) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Event Management', href: '/events' },
+        { title: 'Hosted Events', href: '/my-events' },
         {
             title: event.event_name,
-            href: `/committee/my_events/${event.public_id}/details`,
+            href: `/committee/events/${event.public_id}/information`,
         },
         { title: 'Event Details', href: '#' },
     ];

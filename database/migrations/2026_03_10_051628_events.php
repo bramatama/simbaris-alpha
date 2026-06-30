@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('event_name');
             $table->string('description')->nullable();
             $table->string('location')->nullable();
+            $table->string('poster_path')->nullable();
             $table->enum('status', [
                 'draft','registration_open','registration_closed','ongoing','finished'
                 ])->default('draft');
@@ -30,11 +31,14 @@ return new class extends Migration
 
         Schema::create('participations', function (Blueprint $table) {
             $table->id('participation_id');
-            $table->foreignId('event_id')->index()->constrained('events','event_id')->onDelete('cascade');
-            $table->foreignId('official_team_id')->index()->constrained('official_teams','official_team_id')->onDelete('cascade');
+            $table->foreignId('event_id')->index()->constrained('events','event_id');
+            $table->foreignId('official_team_id')->index()->constrained('official_teams','official_team_id');
             $table->string('team_name')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->string('status_message')->nullable();
             $table->string('payment_proof_path')->nullable();
+            $table->integer('billed_amount');
+            $table->string('participation_files')->nullable();
             $table->timestamps();
         });
 
@@ -54,6 +58,24 @@ return new class extends Migration
             $table->enum('position', ['auditor', 'administration'])->default('administration');
             $table->timestamps();
         });
+
+        Schema::create('event_documents',function (Blueprint $table) {
+            $table->id('document_id');
+            $table->foreignId('event_id')->index()->constrained('events','event_id')->onDelete('cascade');
+            $table->string('document_name');
+            $table->string('document_path');
+            $table->timestamps();
+        });
+
+        Schema::create('team_members',function (Blueprint $table) {
+            $table->id('team_member_id');
+            $table->foreignId('participation_id')->index()->constrained('participations','participation_id')->onDelete('cascade');
+            $table->string('member_name');
+            $table->enum('member_role', ['commander', 'member', 'reserve'])->default('member');
+            $table->string('member_position')->nullable();
+            $table->string('member_photo_path')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -61,9 +83,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('events');
-        Schema::dropIfExists('participations');
-        Schema::dropIfExists('event_judges');
+        Schema::dropIfExists('team_members');
+        Schema::dropIfExists('event_documents');
         Schema::dropIfExists('event_committees');
+        Schema::dropIfExists('event_judges');
+        Schema::dropIfExists('participations');
+        Schema::dropIfExists('events');
     }
 };

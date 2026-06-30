@@ -71,12 +71,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
-        Schema::dropIfExists('admins');
-        Schema::dropIfExists('official_teams');
-        Schema::dropIfExists('judges');
         Schema::dropIfExists('committees');
+        Schema::dropIfExists('judges');
+        Schema::dropIfExists('official_teams');
+        Schema::dropIfExists('admins');
+        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

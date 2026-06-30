@@ -25,8 +25,8 @@ export const secondarySidebarConfig: Record<string, SecondarySidebarSection> = {
         title: 'Event Management',
         items: [
             {
-                title: 'Basic Details',
-                href: '/admin/events/:id/details',
+                title: 'Basic Informations',
+                href: '/admin/events/:id/information',
                 icon: FileText,
             },
             {
@@ -50,14 +50,19 @@ export const secondarySidebarConfig: Record<string, SecondarySidebarSection> = {
         title: 'Event Management',
         items: [
             {
-                title: 'Basic Details',
-                href: '/committee/events/:id/details',
+                title: 'Basic Informations',
+                href: '/committee/events/:id/Information',
                 icon: FileText,
             },
             {
                 title: 'Edit Event',
                 href: '/committee/events/:id/edit',
                 icon: Pen,
+            },
+            {
+                title: '',
+                href: '/committee/events/:id/details',
+                icon: FolderGit2,
             },
             {
                 title: 'Committees',

@@ -144,7 +144,7 @@ export default function CommitteeIndex({
                 <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
                         <Link
-                            href={`/admin/events/${event.public_id}/details`}
+                            href={`/admin/events/${event.public_id}/information`}
                             className="mb-2 inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary"
                         >
                             <ArrowLeft className="mr-1 h-4 w-4" /> Back to Event

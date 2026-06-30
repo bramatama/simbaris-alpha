@@ -17,7 +17,7 @@ class UserController extends Controller
         $query = User::query()
             ->with(['officialTeam', 'committee', 'judge'])
             ->where('user_id', '!=', auth()->id())
-            ->orderByDesc('created_at');
+            ->orderBy('created_at', 'desc');
 
         if ($request->filled('role') && $request->role !== 'all') {
             $query->where('role', $request->role);
