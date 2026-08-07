@@ -53,11 +53,6 @@ class UserController extends Controller
                 ->with('error', 'You cannot delete your own account.');
         }
 
-        // if ($user->role !== 'official_team') {
-        // return redirect()->back()
-        //     ->with('error', 'Only users with the official_team role can be deleted.');
-        // }
-
         $user->delete();
 
         return redirect()->route('admin.users.index')

@@ -7,6 +7,7 @@ use App\Concerns\ProfileValidationRules;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
@@ -42,7 +43,6 @@ class CreateNewUser implements CreatesNewUsers
             case 'official_team':
                 $validationRules = array_merge($validationRules, [
                     'institution' => ['required', 'string', 'max:255'],
-                    'level' => ['required', 'string', 'max:255'],
                     'province' => ['required', 'string', 'max:255'],
                     'city' => ['required', 'string', 'max:255'],
                 ]);
@@ -64,42 +64,44 @@ class CreateNewUser implements CreatesNewUsers
         }
 
         Validator::make($input, $validationRules)->validate();
+        
+        return DB::transaction(function() use ($input, $role) {
 
-        $user = User::create([
-            'public_id' => Str::uuid(),
-            'name' => $input['name'],
-            'email' => $input['email'],
-            'role' => $role,
-            'contact_info' => $input['contact_info'],
-            'password' => $input['password'],
-        ]);
-
-        // Create role-specific record based on the selected role
-        switch ($role) {
-            case 'admin':
-                $user->admin()->create();
-                break;
-
-            case 'official_team':
-                $user->officialTeam()->create([
-                    'institution' => $input['institution'],
-                    'level' => $input['level'],
-                    'province' => $input['province'],
-                    'city' => $input['city'],
-                ]);
-                break;
-
-            case 'judge':
-                $user->judge()->create();
-                break;
-
-            case 'committee':
-                $user->committee()->create([
+            $user = User::create([
+                'public_id' => Str::uuid(),
+                'name' => $input['name'],
+                'email' => $input['email'],
+                'role' => $role,
+                'contact_info' => $input['contact_info'],
+                'password' => $input['password'],
+            ]);
+            
+            // Create role-specific record based on the selected role
+            switch ($role) {
+                case 'admin':
+                    $user->admin()->create();
+                    break;
+                    
+                    case 'official_team':
+                        $user->officialTeam()->create([
+                            'institution' => $input['institution'],
+                            'province' => $input['province'],
+                            'city' => $input['city'],
+                            ]);
+                            break;
+                            
+                            case 'judge':
+                                $user->judge()->create();
+                                break;
+                                
+                                case 'committee':
+                                    $user->committee()->create([
                     'department' => $input['department'],
-                ]);
+                    ]);
                 break;
-        }
+                }
 
-        return $user;
+                return $user;
+        });
     }
 }

@@ -2,39 +2,35 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-/**
- * @property int $user_id 
- * @property string $public_id
- * @property string $name
- * @property string $email
- * @property string $role
- * @property string|null $contact_info
- * @property string|null $profile_picture_path
- * @property string $password
- */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'users';
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
     protected $primaryKey = 'user_id';
 
     /**
-     * Get the route key for implicit model binding.
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
      */
-    public function getRouteKeyName(): string
-    {
-        return 'user_id';
-    }
-
     protected $fillable = [
         'public_id',
         'name',
@@ -48,7 +44,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -68,35 +64,23 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    /**
-     * Get the admin profile for this user.
-     */
     public function admin(): HasOne
     {
-        return $this->hasOne(Admin::class, 'user_id', 'user_id');
+        return $this->hasOne(Admin::class, 'user_id');
     }
 
-    /**
-     * Get the official team profile for this user.
-     */
     public function officialTeam(): HasOne
     {
-        return $this->hasOne(OfficialTeam::class, 'user_id', 'user_id');
+        return $this->hasOne(OfficialTeam::class, 'user_id');
     }
 
-    /**
-     * Get the judge profile for this user.
-     */
-    public function judge(): HasOne
-    {
-        return $this->hasOne(Judge::class, 'user_id', 'user_id');
-    }
-
-    /**
-     * Get the committee profile for this user.
-     */
     public function committee(): HasOne
     {
-        return $this->hasOne(Committee::class, 'user_id', 'user_id');
+        return $this->hasOne(Committee::class, 'user_id');
+    }
+
+    public function judge(): HasOne
+    {
+        return $this->hasOne(Judge::class, 'user_id');
     }
 }

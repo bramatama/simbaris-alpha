@@ -7,35 +7,39 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @property int $admin_id
- * @property int $user_id
- */
 class Admin extends Model
 {
     use HasFactory;
 
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'admins';
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
     protected $primaryKey = 'admin_id';
     public $timestamps = false;
 
-    protected $fillable = [
-        'user_id',
-    ];
-
     /**
-     * Get the user that owns the admin.
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
      */
+    protected $fillable = ['user_id'];
+
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    /**
-     * Get the events created by this admin.
-     */
     public function events(): HasMany
     {
-        return $this->hasMany(Event::class, 'created_by', 'user_id');
+        return $this->hasMany(Event::class, 'created_by');
     }
 }

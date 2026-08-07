@@ -50,7 +50,6 @@ return new class extends Migration
             $table->foreignId('user_id')->index()->constrained('users','user_id')->onDelete('cascade');
             $table->string('province');
             $table->string('city');
-            $table->string('level');
             $table->string('institution');
         });
         

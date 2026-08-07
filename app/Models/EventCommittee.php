@@ -6,43 +6,43 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * @property int $event_committee_id
- * @property int $event_id
- * @property int $committee_id
- * @property string|null $position
- */
 class EventCommittee extends Model
 {
     use HasFactory;
 
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'event_committees';
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
     protected $primaryKey = 'event_committee_id';
 
-    protected $fillable = [
-        'event_id',
-        'committee_id',
-        'position',
-    ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = ['event_id', 'committee_id', 'position'];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
-    /**
-     * Get the event that this assignment belongs to.
-     */
     public function event(): BelongsTo
     {
-        return $this->belongsTo(Event::class, 'event_id', 'event_id');
+        return $this->belongsTo(Event::class, 'event_id');
     }
 
-    /**
-     * Get the committee that this assignment belongs to.
-     */
     public function committee(): BelongsTo
     {
-        return $this->belongsTo(Committee::class, 'committee_id', 'committee_id');
+        return $this->belongsTo(Committee::class, 'committee_id');
     }
 }

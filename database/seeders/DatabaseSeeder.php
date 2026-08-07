@@ -2,13 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
-use App\Models\Committee;
-use App\Models\Judge;
-use App\Models\OfficialTeam;
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,60 +11,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        $adminUser = User::factory()->create([
-            'name' => 'Admin SIMBARIS',
-            'email' => 'bramatamar@gmail.com',
-            'password' => bcrypt('admin123'),
-            'role' => 'admin',
-            'email_verified_at' => Carbon::now(),
-        ]);
-
-        $officialTeamUser = User::factory()->create([
-            'name' => 'Admin 18',
-            'email' => 'paskasspandlas.bpn@gmail.com',
-            'password' => bcrypt('user1234'),
-            'role' => 'official_team',
-            'email_verified_at' => Carbon::now(),
-        ]);
-
-        $committeeUser = User::factory()->create([
-            'name' => 'Committee Alpha',
-            'email' => 'committee@alpha.id',
-            'password' => bcrypt('committee123'),
-            'role' => 'committee',
-            'email_verified_at' => Carbon::now(),
-        ]);
-
-        $judgeUser = User::factory()->create([
-            'name' => 'Judge Alpha',
-            'email' => 'judge@alpha.id',
-            'password' => bcrypt('judge123'),
-            'role' => 'judge',
-            'email_verified_at' => Carbon::now(),
-        ]);
-
-
-        Admin::factory()->create([
-            'user_id' => $adminUser->user_id,
-        ]);
-
-        OfficialTeam::factory()->create([
-            'user_id' => $officialTeamUser->user_id,
-            'province' => 'Kalimantan Timur',
-            'city' => 'Balikpapan',
-            'level' => 'SMP/MTs Sederajat',
-            'institution' => 'SMP 18 Balikpapan',
-        ]);
-
-        Committee::factory()->create([
-            'user_id' => $committeeUser->user_id,
-            'department' => 'Alpha Academy',
-        ]);
-
-        Judge::factory()->create([
-            'user_id' => $judgeUser->user_id,
+        // URUTAN PEMANGGILAN SANGAT PENTING! (Mencegah Error Foreign Key)
+        $this->call([
+            LevelSeeder::class,           // 1. Master Level (Dibutuhkan oleh Tim & Event)
+            ChampionSeeder::class,        // 2. Master Juara
+            UserSeeder::class,            // 3. Users & Profil (Dibutuhkan oleh Event)
+            EventSeeder::class,           // 4. Konfigurasi Event (Dibutuhkan oleh Transaksi)
+            ParticipationSeeder::class,   // 5. Transaksi Pendaftaran & Anggota Tim
         ]);
     }
 }

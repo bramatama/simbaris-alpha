@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Judge extends Model
+class ScoringCategory extends Model
 {
     use HasFactory;
 
@@ -16,34 +16,34 @@ class Judge extends Model
      *
      * @var string
      */
-    protected $table = 'judges';
+    protected $table = 'scoring_categories';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'judge_id';
+    protected $primaryKey = 'scoring_category_id';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = ['user_id'];
+    protected $fillable = ['event_id', 'scoring_category_name'];
 
-    public function user(): BelongsTo
+    public function event(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Event::class, 'event_id');
     }
 
-    public function eventJudges(): HasMany
+    public function assessmentCriteria(): HasMany
     {
-        return $this->hasMany(EventJudge::class, 'judge_id');
+        return $this->hasMany(AssessmentCriterion::class, 'scoring_category_id');
     }
 
     public function teamScores(): HasMany
     {
-        return $this->hasMany(TeamScore::class, 'judge_id');
+        return $this->hasMany(TeamScore::class, 'scoring_category_id');
     }
 }

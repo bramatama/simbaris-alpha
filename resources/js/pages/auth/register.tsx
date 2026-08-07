@@ -6,15 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    SelectLabel,
-} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import AuthLayout from '@/layouts/auth-layout';
 import { login } from '@/routes';
@@ -82,53 +73,15 @@ export default function Register() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="contact_info">Kontak</Label>
+                                <Label htmlFor="contact_info">Kontak (Opsional)</Label>
                                 <Input
                                     id="contact_info"
                                     type="text"
-                                    required
                                     tabIndex={3}
                                     name="contact_info"
                                     placeholder="Kontak"
                                 />
                                 <InputError message={errors.contact_info} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="level">Jenjang</Label>
-                                <Input
-                                    id="level"
-                                    type="hidden"
-                                    required
-                                    name="level"
-                                    value={level}
-                                ></Input>
-                                <Select value={level} onValueChange={setLevel}>
-                                    <SelectTrigger
-                                        tabIndex={4}
-                                        className="h-9 w-full"
-                                    >
-                                        <SelectValue placeholder="Jenjang" />
-                                    </SelectTrigger>
-                                    <SelectContent position="popper">
-                                        <SelectGroup>
-                                            <SelectLabel>Jenjang</SelectLabel>
-                                            <SelectItem value="SD/MI Sederajat">
-                                                SD/MI Sederajat
-                                            </SelectItem>
-                                            <SelectItem value="SMP/MTs Sederajat">
-                                                SMP/MTs Sederajat
-                                            </SelectItem>
-                                            <SelectItem value="SMA/SMK/MA Sederajat">
-                                                SMA/SMK/MA Sederajat
-                                            </SelectItem>
-                                            <SelectItem value="Purna/Umum">
-                                                Purna/Umum
-                                            </SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.level} />
                             </div>
 
                             <div className="grid gap-2">
@@ -143,8 +96,7 @@ export default function Register() {
                                 />
                                 <InputError message={errors.province} />
                             </div>
-                            <div className="flex flex-col items-center justify-center gap-4 md:col-span-2">
-                                <div className="md:w-1/2">
+                            <div className="grid gap-2">
                                     <Label htmlFor="city">Kota</Label>
                                     <Input
                                         id="city"
@@ -155,7 +107,6 @@ export default function Register() {
                                         placeholder="Kota"
                                     />
                                     <InputError message={errors.city} />
-                                </div>
                             </div>
                             <div className="flex flex-col items-center justify-center gap-4 md:col-span-2">
                                 <Separator></Separator>

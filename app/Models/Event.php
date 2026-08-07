@@ -7,31 +7,35 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @property int $event_id
- * @property string $public_id
- * @property string $event_name
- * @property string|null $description
- * @property string $location
- * @property string $status
- * @property \Illuminate\Support\Carbon $registration_start_time
- * @property \Illuminate\Support\Carbon $registration_end_time
- * @property \Illuminate\Support\Carbon $start_time
- * @property \Illuminate\Support\Carbon $end_time
- * @property int $created_by
- */
 class Event extends Model
 {
     use HasFactory;
 
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
     protected $table = 'events';
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
     protected $primaryKey = 'event_id';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'public_id',
         'event_name',
         'description',
         'location',
+        'poster_path',
         'status',
         'registration_start_time',
         'registration_end_time',
@@ -40,6 +44,11 @@ class Event extends Model
         'created_by',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
         'registration_start_time' => 'datetime',
         'registration_end_time' => 'datetime',
@@ -49,35 +58,38 @@ class Event extends Model
         'updated_at' => 'datetime',
     ];
 
-    /**
-     * Get the admin that created the event.
-     */
-    public function admin(): BelongsTo
+    public function creator(): BelongsTo
     {
-        return $this->belongsTo(Admin::class, 'created_by', 'user_id');
+        return $this->belongsTo(Admin::class, 'created_by');
     }
 
-    /**
-     * Get the participations for this event.
-     */
     public function participations(): HasMany
     {
-        return $this->hasMany(Participation::class, 'event_id', 'event_id');
+        return $this->hasMany(Participation::class, 'event_id');
     }
 
-    /**
-     * Get the event judges for this event.
-     */
     public function eventJudges(): HasMany
     {
-        return $this->hasMany(EventJudge::class, 'event_id', 'event_id');
+        return $this->hasMany(EventJudge::class, 'event_id');
     }
 
-    /**
-     * Get the event committees for this event.
-     */
     public function eventCommittees(): HasMany
     {
-        return $this->hasMany(EventCommittee::class, 'event_id', 'event_id');
+        return $this->hasMany(EventCommittee::class, 'event_id');
+    }
+
+    public function eventDocuments(): HasMany
+    {
+        return $this->hasMany(EventDocument::class, 'event_id');
+    }
+
+    public function eventLevels(): HasMany
+    {
+        return $this->hasMany(EventLevel::class, 'event_id');
+    }
+
+    public function scoringCategories(): HasMany
+    {
+        return $this->hasMany(ScoringCategory::class, 'event_id');
     }
 }

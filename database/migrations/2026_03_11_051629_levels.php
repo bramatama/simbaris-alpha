@@ -17,9 +17,8 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::table('official_teams',function(Blueprint $table){
-            $table->dropColumn('level');
-            $table->foreignId('level_id')->index()->constrained('levels','level_id');        
+        Schema::table('participations', function(Blueprint $table){
+            $table->foreignId('level')->index()->constrained('levels','level_id')->onDelete('restrict');
         });
 
         Schema::create('event_levels',function(Blueprint $table){
@@ -38,11 +37,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('event_levels');
-        Schema::table('official_teams',function(Blueprint $table){
-            $table->dropForeign(['level_id']);
-            $table->dropColumn('level_id');
-            $table->string('level')->nullable();
-        });
+        Schema::dropColumns('participations', ['level_id']);
         Schema::dropIfExists('levels');
     }
 };

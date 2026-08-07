@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Committee extends Model
+class TeamAchievement extends Model
 {
     use HasFactory;
 
@@ -16,31 +15,29 @@ class Committee extends Model
      *
      * @var string
      */
-    protected $table = 'committees';
+    protected $table = 'team_achievements';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'committee_id';
-    public $timestamps = false;
-
+    protected $primaryKey = 'achievement_id';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = ['user_id', 'department'];
+    protected $fillable = ['participation_id', 'event_champion_id', 'certificate_path'];
 
-    public function user(): BelongsTo
+    public function participation(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Participation::class, 'participation_id');
     }
 
-    public function eventCommittees(): HasMany
+    public function eventChampion(): BelongsTo
     {
-        return $this->hasMany(EventCommittee::class, 'committee_id');
+        return $this->belongsTo(EventChampion::class, 'event_champion_id');
     }
 }

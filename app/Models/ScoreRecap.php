@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class EventJudge extends Model
+class ScoreRecap extends Model
 {
     use HasFactory;
 
@@ -15,34 +15,33 @@ class EventJudge extends Model
      *
      * @var string
      */
-    protected $table = 'event_judges';
+    protected $table = 'score_recaps';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'event_judge_id';
+    protected $primaryKey = 'recap_id';
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = ['event_id', 'judge_id', 'expertise', 'secondary_expertise'];
+    protected $fillable = ['participation_id', 'champion_category_id', 'final_score'];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
     protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'final_score' => 'decimal:2',
     ];
 
-    public function event(): BelongsTo
+    public function participation(): BelongsTo
     {
-        return $this->belongsTo(Event::class, 'event_id');
-    }
-
-    public function judge(): BelongsTo
-    {
-        return $this->belongsTo(Judge::class, 'judge_id');
+        return $this->belongsTo(Participation::class, 'participation_id');
     }
 }
